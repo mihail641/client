@@ -9,7 +9,6 @@ import (
 	"net/http"
 )
 
-
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/do", func(res http.ResponseWriter, req *http.Request) {
@@ -17,7 +16,5 @@ func main() {
 		con := controller.NewController()
 		con.HandleHttp(res, req)
 	}).Methods("GET")
-	log.Fatal(http.ListenAndServe(":4000", router))
-	}
-
-
+	log.Fatal(http.ListenAndServe(":5000", router))
+}
