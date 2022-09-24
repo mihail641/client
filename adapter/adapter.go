@@ -16,11 +16,10 @@ import (
 )
 
 const (
-	URL = "http://127.0.0.1:4000/user"
-	URLGET="http://127.0.0.1:4000/users"
-
-
+	URL    = "http://127.0.0.1:4000/user"
+	URLGET = "http://127.0.0.1:4000/users"
 )
+
 type User struct {
 	ID   int    `xml:"id_xml",json:"id"`
 	Name string `xml:"name_xml",json:"name"`
@@ -28,90 +27,80 @@ type User struct {
 }
 
 type Client struct {
-	//Get(url string) (*http.Response, error)
-	//Do(req *http.Request) (*http.Response, error)
-	//Provider        Provider
-	HTTPClient                 http.Client
-
+	HTTPClient http.Client
 }
-//type Provider interface {
-//	Get(url string) (*http.Response, error)
-//	Do(req *http.Request) (*http.Response, error)
-//}
+
 func NewClient() *Client {
-	//httpClient := &http.Client{}
-	//client := &Client{
-	//	Provider:        httpClient}
 	return &Client{
 		HTTPClient: http.Client{},
 	}
 }
-func (m*Client)MakeRequestGet()([]User, error)  {
+func (m *Client) MakeRequestGet() ([]User, error) {
 	req, err := http.NewRequest("GET", URLGET, nil)
 	if err != nil {
 		fmt.Println("Проблема с адресом", err)
-		return [] User {}, err
+		return []User{}, err
 	}
 	res, err := m.HTTPClient.Do(req)
 	if err != nil {
-		fmt.Println(err)
-		return [] User {}, err
+		fmt.Println("проблема подключения к клиенту", err)
+		return []User{}, err
 
 	}
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body) // response body is []byte
-	if err !=nil {
-		fmt.Println(err)
-		return [] User {}, err
+	if err != nil {
+		fmt.Println("Ошибка перевода ответа в строку", err)
+		return []User{}, err
 
 	}
 	fmt.Println(string(body))
-	p:=[]User {}
+	p := []User{}
 	fmt.Println("Печать из функции", string(body))
 	err = json.Unmarshal(body, &p)
 	if err != nil {
 		fmt.Println("Can not unmarshal JSON", err)
-		return [] User {}, err
+		return []User{}, err
 	}
 	fmt.Println("Структура", p)
-	return p , err
+	return p, err
 }
-func (m*Client)MakeRequestCreate()(User, error)  {
+func (m *Client) MakeRequestCreate() (User, error) {
 
 	var user User
-	user=User{
+	user = User{
 		Name: "RED",
 		Sale: 895,
 	}
-	userBytes, err:= json.Marshal(user)
+	userBytes, err := json.Marshal(user)
 	if err != nil {
 		fmt.Println(err)
 		return User{}, err
 	}
-	byteRead:=bytes.NewReader(userBytes)
-	req, err:= http.NewRequest("POST", URL, byteRead)
+	byteRead := bytes.NewReader(userBytes)
+	req, err := http.NewRequest("POST", URL, byteRead)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Проблема чтения заголовка", err)
 		return User{}, err
 	}
 	res, err := m.HTTPClient.Do(req)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("проблема подключения к клиенту", err)
 		return User{}, err
 	}
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body) // response body is []byte
-	if err !=nil {
-		fmt.Println(err)
+	if err != nil {
+		fmt.Println("Ошибка перевода ответа в строку", err)
 		return User{}, err
 	}
 	fmt.Println(string(body))
 	return User{}, err
 }
-func (m*Client) MakeRequestDelete (IdMax int) (User, error){
-	id:= strconv.Itoa(IdMax)
-	fmt.Println("Максимально id",id)
-	id=url.PathEscape(id)
+func (m *Client) MakeRequestDelete(IdMax int) (User, error) {
+	id := strconv.Itoa(IdMax)
+	fmt.Println("Максимально id", id)
+	id = url.PathEscape(id)
 	u, err := url.Parse(URL)
 	if err != nil {
 		log.Fatal(err)
@@ -123,41 +112,41 @@ func (m*Client) MakeRequestDelete (IdMax int) (User, error){
 		return User{}, err
 	}
 	fmt.Println(rel)
-	udlStr:=rel.String()
-	req, err:= http.NewRequest("DELETE", udlStr, nil)
+	udlStr := rel.String()
+	req, err := http.NewRequest("DELETE", udlStr, nil)
 	if err != nil {
 		fmt.Println(err)
 		return User{}, err
 	}
 	res, err := m.HTTPClient.Do(req)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Ошибка подключения к клиенту", err)
 		return User{}, err
 	}
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body) // response body is []byte
-	if err !=nil {
-		fmt.Println(err)
+	if err != nil {
+		fmt.Println("Ошибка перевода ответа в строку", err)
 		return User{}, err
 	}
 	fmt.Println(string(body))
 	io.Copy(os.Stdout, res.Body)
 	return User{}, err
 }
-func (m*Client) MakeRequestUpdate (IdMin int) (User, error) {
+func (m *Client) MakeRequestUpdate(IdMin int) (User, error) {
 	var user User
-	user=User{
-		ID: IdMin,
+	user = User{
+		ID:   IdMin,
 		Name: "Vova",
 		Sale: 654,
 	}
-	userBytes, err:= json.Marshal(user)
+	userBytes, err := json.Marshal(user)
 	if err != nil {
 		fmt.Println(err)
 		return User{}, err
 	}
-	byteRead:=bytes.NewReader(userBytes)
-	req, err:= http.NewRequest("PUT", URL, byteRead)
+	byteRead := bytes.NewReader(userBytes)
+	req, err := http.NewRequest("PUT", URL, byteRead)
 
 	if err != nil {
 		fmt.Println(err)
@@ -165,13 +154,13 @@ func (m*Client) MakeRequestUpdate (IdMin int) (User, error) {
 	}
 	res, err := m.HTTPClient.Do(req)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Проблема подключения к клиенту", err)
 		return User{}, err
 	}
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body) // response body is []byte
-	if err !=nil {
-		fmt.Println(err)
+	if err != nil {
+		fmt.Println("Ошибка перевода ответа в строку", err)
 		return User{}, err
 	}
 	fmt.Println(string(body))
@@ -182,14 +171,14 @@ func (m*Client) MakeRequestUpdate (IdMin int) (User, error) {
 	}
 	return user, err
 }
-func (m*Client)Min (p []User) int {
+func (m *Client) Min(p []User) int {
 
 	var k []int
 
 	for _, rec := range p {
-		k= append(k, rec.ID)
+		k = append(k, rec.ID)
 	}
-	IdMin:=k[0]
+	IdMin := k[0]
 	for _, value := range k {
 		if value < IdMin {
 			IdMin = value
@@ -198,15 +187,15 @@ func (m*Client)Min (p []User) int {
 	return IdMin
 }
 
-func (m*Client) Max (p []User)  int {
+func (m *Client) Max(p []User) int {
 	var k []int
 	for _, rec := range p {
-		k= append(
+		k = append(
 			k,
 			rec.ID,
 		)
 	}
-	IdMax:=k[0]
+	IdMax := k[0]
 	for _, value := range k {
 		if value > IdMax {
 			IdMax = value
