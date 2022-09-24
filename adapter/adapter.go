@@ -1,15 +1,14 @@
 package adapter
+
 import (
 	"bytes"
 	"encoding/json"
-		"fmt"
+	"fmt"
 	"io"
 	"log"
 	"net/url"
 	"os"
 	"strconv"
-	"strings"
-
 	//"io"
 	"io/ioutil"
 	//"log"
@@ -47,39 +46,32 @@ func NewClient() *Client {
 		HTTPClient: http.Client{},
 	}
 }
-func (m*Client) ClientServ (c*User) (bool, error)  {
-	url := &url.URL{
-		Scheme: "http",
-		Path:   "menu.html",
-	}
-	res, err := m.Provider.Get(url.String())
-	if err != nil {
-		return false, err
-	}
-	body := res.Body
-	defer body.Close()
-	buf, err := ioutil.ReadAll(body)
-	if err != nil {
-		return false, err
-	}
-	return strings.Contains(string(buf), "<title>WebRelay</title>"), nil
-}
 func (m*Client)MakeRequestGet()([]User, error)  {
-	var req, err = http.NewRequest("GET", URLGET, nil)
+	req, err := http.NewRequest("GET", URLGET, nil)
 	if err != nil {
 		fmt.Println("Проблема с адресом", err)
+		return [] User {}, err
 	}
-
-		body, err := ioutil.ReadAll(resp.Body) // response body is []byte
+	res, err := m.HTTPClient.Do(req)
 	if err != nil {
 		fmt.Println(err)
-	}
-	p:=[]User {}
+		return [] User {}, err
 
+	}
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body) // response body is []byte
+	if err !=nil {
+		fmt.Println(err)
+		return [] User {}, err
+
+	}
+	fmt.Println(string(body))
+	p:=[]User {}
 	fmt.Println("Печать из функции", string(body))
 	err = json.Unmarshal(body, &p)
 	if err != nil {
 		fmt.Println("Can not unmarshal JSON", err)
+		return [] User {}, err
 	}
 	fmt.Println("Структура", p)
 	return p , err
@@ -94,69 +86,62 @@ func (m*Client)MakeRequestCreate()(User, error)  {
 	userBytes, err:= json.Marshal(user)
 	if err != nil {
 		fmt.Println(err)
-
+		return User{}, err
 	}
 	byteRead:=bytes.NewReader(userBytes)
 	req, err:= http.NewRequest("POST", URL, byteRead)
 	if err != nil {
 		fmt.Println(err)
+		return User{}, err
 	}
-	//resp, err := m.Client.Do(req)
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
-	//defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body) // response body is []byte
+	res, err := m.HTTPClient.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return User{}, err
+	}
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body) // response body is []byte
 	if err !=nil {
 		fmt.Println(err)
+		return User{}, err
 	}
 	fmt.Println(string(body))
 	return User{}, err
 }
 func (m*Client) MakeRequestDelete (IdMax int) (User, error){
-
 	id:= strconv.Itoa(IdMax)
 	fmt.Println("Максимально id",id)
 	id=url.PathEscape(id)
-
-
 	u, err := url.Parse(URL)
 	if err != nil {
 		log.Fatal(err)
+		return User{}, err
 	}
-
 	rel, err := u.Parse(id)
 	if err != nil {
 		log.Fatal(err)
+		return User{}, err
 	}
 	fmt.Println(rel)
-
 	udlStr:=rel.String()
-
 	req, err:= http.NewRequest("DELETE", udlStr, nil)
-
 	if err != nil {
 		fmt.Println(err)
-
+		return User{}, err
 	}
-	//resp, err := m.Client.Do(req)
-	//if err != nil {
-	//	fmt.Println(err)
-	//
-	//}
-	//defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body) // response body is []byte
+	res, err := m.HTTPClient.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return User{}, err
+	}
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body) // response body is []byte
 	if err !=nil {
 		fmt.Println(err)
-
+		return User{}, err
 	}
 	fmt.Println(string(body))
-
-
-	//fmt.Println(PrettyPrint(result))
-
-	// Loop through the data node for the FirstName
-	io.Copy(os.Stdout, resp.Body)
+	io.Copy(os.Stdout, res.Body)
 	return User{}, err
 }
 func (m*Client) MakeRequestUpdate (IdMin int) (User, error) {
@@ -169,23 +154,28 @@ func (m*Client) MakeRequestUpdate (IdMin int) (User, error) {
 	userBytes, err:= json.Marshal(user)
 	if err != nil {
 		fmt.Println(err)
+		return User{}, err
 	}
 	byteRead:=bytes.NewReader(userBytes)
 	req, err:= http.NewRequest("PUT", URL, byteRead)
 
 	if err != nil {
 		fmt.Println(err)
+		return User{}, err
 	}
-	//resp, err := m.Client.Do(req)
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
-	//defer resp.Body.Close()
-	//body, err := ioutil.ReadAll(resp.Body) // response body is []byte
-	//if err !=nil {
-	//	fmt.Println(err)
-	//}
-	//fmt.Println(string(body))
+	res, err := m.HTTPClient.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return User{}, err
+	}
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body) // response body is []byte
+	if err !=nil {
+		fmt.Println(err)
+		return User{}, err
+	}
+	fmt.Println(string(body))
+
 	err = json.Unmarshal(body, &user)
 	if err != nil {
 		return User{}, fmt.Errorf("can't parse body as JSON: %w", err)
@@ -209,21 +199,14 @@ func (m*Client)Min (p []User) int {
 }
 
 func (m*Client) Max (p []User)  int {
-
-
-
-
 	var k []int
-
 	for _, rec := range p {
 		k= append(
 			k,
 			rec.ID,
 		)
 	}
-
 	IdMax:=k[0]
-
 	for _, value := range k {
 		if value > IdMax {
 			IdMax = value
