@@ -25,13 +25,12 @@ func (d*Adapter)ClientAlgorithmTake()([]User,error) {
 
 user, err := d.model.MakeRequestGet()
 if err != nil {
-fmt.Println(err)
+	m := "Ошибка выполнеия 1 функции получения информации о всех пользователях"
+	fmt.Println(m, err)
+	return []User{},err
 }
 fmt.Println("Переданная структура", user)
 IdMin := d.model.Min(user)
-if err != nil {
-fmt.Println(err)
-}
 IdMax := d.model.Max(user)
 fmt.Println("Максимальное значение", IdMax)
 fmt.Println("Минимальное значение", IdMin)
@@ -39,14 +38,13 @@ fmt.Println("Минимальное значение", IdMin)
 d.model.MakeRequestUpdate(IdMin)
 d.model.MakeRequestDelete(IdMax)
 d.model.MakeRequestCreate()
-	if err != nil {
-		fmt.Println(err)
-	}
 t, err:=d.model.MakeRequestGet()
-if err != nil {
-fmt.Println(err)
-}
+	if err != nil {
+		m := "Ошибка выполнеия 2 функции получения информации о всех пользователях: %s"
+		fmt.Println(m, err)
+		return []User{},err
+	}
 	fmt.Println(t)
 
-return []User{}, err
+return []User{}, nil
 }
