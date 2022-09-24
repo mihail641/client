@@ -23,25 +23,15 @@ func NewController() *Controller {
 }
 
 func (m*Controller) HandleHttp(res http.ResponseWriter, req *http.Request)  {
-	//client := http.Client{}
-	//if err != nil {
-	//	fmt.Println(err)
-	//
-	//}
-	//defer res.Body.Close()
-	//body, err := ioutil.ReadAll(res.Body) // response body is []byte
-	//if err !=nil {
-	//	fmt.Println(err)
-	//
-	//}
-	//fmt.Println(string(body))
-	//
-
+	fmt.Println("Сервер запустился")
 	var t, err = m.controller.ClientAlgorithmTake()
 	if err != nil {
-		fmt.Println(err)
+		m := "Ошибка выполнеия крнтроллера: %s"
+		fmt.Println(m, err)
+		fmt.Fprintf(res, m, err)
 		return
 	}
+
 	fmt.Println("Срез структуры перед XML", t)
 	res.Header().Set("Content-Type", "application/xml")
 	xml.NewEncoder(res).Encode(&User{})
