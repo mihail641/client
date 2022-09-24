@@ -8,21 +8,16 @@ import (
 	"net/http"
 )
 
-type User struct {
-	users *model.User
-}
-
 type Controller struct {
-	controller *model.Adapter
+	controller *model.Model
 }
 
 func NewController() *Controller {
 	return &Controller{
-		controller:model.NewModel(),
+		controller: model.NewModel(),
 	}
 }
-
-func (m*Controller) HandleHttp(res http.ResponseWriter, req *http.Request)  {
+func (m *Controller) HandleHttp(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("Сервер запустился")
 	var t, err = m.controller.ClientAlgorithmTake()
 	if err != nil {
@@ -31,9 +26,7 @@ func (m*Controller) HandleHttp(res http.ResponseWriter, req *http.Request)  {
 		fmt.Fprintf(res, m, err)
 		return
 	}
-
 	fmt.Println("Срез структуры перед XML", t)
 	res.Header().Set("Content-Type", "application/xml")
-	xml.NewEncoder(res).Encode(&User{})
+	xml.NewEncoder(res).Encode(&t)
 }
-
