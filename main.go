@@ -10,7 +10,10 @@ import (
 )
 
 func main() {
+	//запуск роутера
 	router := mux.NewRouter()
+	//router.HandleFunc регистрация первого маршрута, с URL оканчивающимся на "/users" и методом GET, созадет новый экземпляр конструктора
+	//контроллера с аргументом DB, прием-передача параметров функции контроллера Getusers
 	router.HandleFunc("/do", func(res http.ResponseWriter, req *http.Request) {
 		//userCtrl := controller.NewUserCtrl()
 		con := controller.NewController()
