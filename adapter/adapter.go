@@ -15,26 +15,33 @@ import (
 	"net/http"
 )
 
+//постоянные URL
 const (
 	URL    = "http://127.0.0.1:4000/user"
 	URLGET = "http://127.0.0.1:4000/users"
+	URL3   = "http://127.0.0.1:4000/user/"
 )
 
+// User структура
 type User struct {
 	ID   int    `xml:"id_xml",json:"id"`
 	Name string `xml:"name_xml",json:"name"`
 	Sale int    `xml:"sale_xml",json:"sale_xml"`
 }
 
+// Client структура
 type Client struct {
 	HTTPClient http.Client
 }
 
+//конструктор адаптера
 func NewClient() *Client {
 	return &Client{
 		HTTPClient: http.Client{},
 	}
 }
+
+// MakeRequestGet метод получения всех значений БД
 func (m *Client) MakeRequestGet() ([]User, error) {
 	req, err := http.NewRequest("GET", URLGET, nil)
 	if err != nil {
@@ -65,6 +72,8 @@ func (m *Client) MakeRequestGet() ([]User, error) {
 	fmt.Println("Структура", p)
 	return p, err
 }
+
+// MakeRequestCreate метод адаптера создания нового значения
 func (m *Client) MakeRequestCreate() (User, error) {
 
 	var user User
@@ -97,11 +106,13 @@ func (m *Client) MakeRequestCreate() (User, error) {
 	fmt.Println(string(body))
 	return User{}, err
 }
+
+// MakeRequestDelete метод адаптера удаление значений по максимальному id
 func (m *Client) MakeRequestDelete(IdMax int) (User, error) {
 	id := strconv.Itoa(IdMax)
 	fmt.Println("Максимально id", id)
 	id = url.PathEscape(id)
-	u, err := url.Parse(URL)
+	u, err := url.Parse(URL3)
 	if err != nil {
 		log.Fatal(err)
 		return User{}, err
@@ -133,13 +144,18 @@ func (m *Client) MakeRequestDelete(IdMax int) (User, error) {
 	io.Copy(os.Stdout, res.Body)
 	return User{}, err
 }
+
+// MakeRequestUpdate метод адаптера изменения значений БД по минимальному id
 func (m *Client) MakeRequestUpdate(IdMin int) (User, error) {
 	var user User
+	user.ID = IdMin
 	user = User{
-		ID:   IdMin,
+		ID:   user.ID,
 		Name: "Vova",
 		Sale: 654,
 	}
+	fmt.Println("user.ID", IdMin)
+
 	userBytes, err := json.Marshal(user)
 	if err != nil {
 		fmt.Println(err)
@@ -164,13 +180,14 @@ func (m *Client) MakeRequestUpdate(IdMin int) (User, error) {
 		return User{}, err
 	}
 	fmt.Println(string(body))
-
 	err = json.Unmarshal(body, &user)
 	if err != nil {
 		return User{}, fmt.Errorf("can't parse body as JSON: %w", err)
 	}
 	return user, err
 }
+
+// Min метод адаптера нахождения минимального id в структуре
 func (m *Client) Min(p []User) int {
 
 	var k []int
@@ -187,6 +204,7 @@ func (m *Client) Min(p []User) int {
 	return IdMin
 }
 
+// Max метод адаптера по определению в БД максимального значения id
 func (m *Client) Max(p []User) int {
 	var k []int
 	for _, rec := range p {
