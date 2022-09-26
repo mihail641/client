@@ -7,13 +7,13 @@ import (
 
 //Model структура используется для конструктора контроллер
 type Model struct {
-	model *adapter.Client
+	model *adapter.Adapter
 }
 
 // NewModel конструктор модели
 func NewModel() *Model {
 	return &Model{
-		model: adapter.NewClient(),
+		model: adapter.NewAdapter(),
 	}
 }
 
