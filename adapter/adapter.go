@@ -35,7 +35,7 @@ type Adapter struct {
 }
 
 //конструктор адаптера
-func NewClient() *Adapter {
+func NewAdapter() *Adapter {
 	return &Adapter{
 		HTTPClient: http.Client{},
 	}
