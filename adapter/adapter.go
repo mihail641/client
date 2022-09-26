@@ -30,19 +30,19 @@ type User struct {
 }
 
 // Client структура
-type Client struct {
+type Adapter struct {
 	HTTPClient http.Client
 }
 
 //конструктор адаптера
-func NewClient() *Client {
-	return &Client{
+func NewClient() *Adapter {
+	return &Adapter{
 		HTTPClient: http.Client{},
 	}
 }
 
 // MakeRequestGet метод получения всех значений БД
-func (m *Client) MakeRequestGet() ([]User, error) {
+func (m *Adapter) MakeRequestGet() ([]User, error) {
 	req, err := http.NewRequest("GET", URLGET, nil)
 	if err != nil {
 		fmt.Println("Проблема с адресом", err)
@@ -74,7 +74,7 @@ func (m *Client) MakeRequestGet() ([]User, error) {
 }
 
 // MakeRequestCreate метод адаптера создания нового значения
-func (m *Client) MakeRequestCreate() (User, error) {
+func (m *Adapter) MakeRequestCreate() (User, error) {
 
 	var user User
 	user = User{
@@ -108,7 +108,7 @@ func (m *Client) MakeRequestCreate() (User, error) {
 }
 
 // MakeRequestDelete метод адаптера удаление значений по максимальному id
-func (m *Client) MakeRequestDelete(IdMax int) (User, error) {
+func (m *Adapter) MakeRequestDelete(IdMax int) (User, error) {
 	id := strconv.Itoa(IdMax)
 	fmt.Println("Максимально id", id)
 	id = url.PathEscape(id)
@@ -146,7 +146,7 @@ func (m *Client) MakeRequestDelete(IdMax int) (User, error) {
 }
 
 // MakeRequestUpdate метод адаптера изменения значений БД по минимальному id
-func (m *Client) MakeRequestUpdate(IdMin int) (User, error) {
+func (m *Adapter) MakeRequestUpdate(IdMin int) (User, error) {
 	var user User
 	user.ID = IdMin
 	user = User{
@@ -188,7 +188,7 @@ func (m *Client) MakeRequestUpdate(IdMin int) (User, error) {
 }
 
 // Min метод адаптера нахождения минимального id в структуре
-func (m *Client) Min(p []User) int {
+func (m *Adapter) Min(p []User) int {
 
 	var k []int
 
@@ -205,7 +205,7 @@ func (m *Client) Min(p []User) int {
 }
 
 // Max метод адаптера по определению в БД максимального значения id
-func (m *Client) Max(p []User) int {
+func (m *Adapter) Max(p []User) int {
 	var k []int
 	for _, rec := range p {
 		k = append(
