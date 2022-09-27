@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/url"
 	"os"
 	"strconv"
@@ -19,14 +18,13 @@ import (
 const (
 	URL    = "http://127.0.0.1:4000/user"
 	URLGET = "http://127.0.0.1:4000/users"
-	URL3   = "http://127.0.0.1:4000/user/"
 )
 
 // User структура
 type User struct {
-	ID   int    `xml:"id_xml",json:"id"`
-	Name string `xml:"name_xml",json:"name"`
-	Sale int    `xml:"sale_xml",json:"sale_xml"`
+	ID   int    `xml:"id",json:"id"`
+	Name string `xml:"name",json:"name"`
+	Sale int    `xml:"sale",json:"sale"`
 }
 
 // Client структура
@@ -74,13 +72,13 @@ func (m *Adapter) MakeRequestGet() ([]User, error) {
 }
 
 // MakeRequestCreate метод адаптера создания нового значения
-func (m *Adapter) MakeRequestCreate() (User, error) {
+func (m *Adapter) MakeRequestCreate(user User) (User, error) {
 
-	var user User
-	user = User{
-		Name: "RED",
-		Sale: 895,
-	}
+	//var user User
+	//user = User{
+	//	Name: "RED",
+	//	Sale: 895,
+	//}
 	userBytes, err := json.Marshal(user)
 	if err != nil {
 		fmt.Println(err)
@@ -102,9 +100,10 @@ func (m *Adapter) MakeRequestCreate() (User, error) {
 	if err != nil {
 		fmt.Println("Ошибка перевода ответа в строку", err)
 		return User{}, err
+	} else {
+		fmt.Println(string(body))
+		return User{}, err
 	}
-	fmt.Println(string(body))
-	return User{}, err
 }
 
 // MakeRequestDelete метод адаптера удаление значений по максимальному id
@@ -112,19 +111,9 @@ func (m *Adapter) MakeRequestDelete(IdMax int) (User, error) {
 	id := strconv.Itoa(IdMax)
 	fmt.Println("Максимально id", id)
 	id = url.PathEscape(id)
-	u, err := url.Parse(URL3)
-	if err != nil {
-		log.Fatal(err)
-		return User{}, err
-	}
-	rel, err := u.Parse(id)
-	if err != nil {
-		log.Fatal(err)
-		return User{}, err
-	}
-	fmt.Println(rel)
-	udlStr := rel.String()
-	req, err := http.NewRequest("DELETE", udlStr, nil)
+	URLNew := URL + string("/") + id
+
+	req, err := http.NewRequest("DELETE", URLNew, nil)
 	if err != nil {
 		fmt.Println(err)
 		return User{}, err
@@ -139,22 +128,23 @@ func (m *Adapter) MakeRequestDelete(IdMax int) (User, error) {
 	if err != nil {
 		fmt.Println("Ошибка перевода ответа в строку", err)
 		return User{}, err
+	} else {
+		fmt.Println(string(body))
+		io.Copy(os.Stdout, res.Body)
+		return User{}, err
 	}
-	fmt.Println(string(body))
-	io.Copy(os.Stdout, res.Body)
-	return User{}, err
 }
 
 // MakeRequestUpdate метод адаптера изменения значений БД по минимальному id
-func (m *Adapter) MakeRequestUpdate(IdMin int) (User, error) {
-	var user User
-	user.ID = IdMin
-	user = User{
-		ID:   user.ID,
-		Name: "Vova",
-		Sale: 654,
-	}
-	fmt.Println("user.ID", IdMin)
+func (m *Adapter) MakeRequestUpdate(user User) (User, error) {
+	//var user User
+	//user.ID = IdMin
+	//user = User{
+	//	ID:   user.ID,
+	//	Name: "Vova",
+	//	Sale: 654,
+	//}
+	//fmt.Println("user.ID", IdMin)
 
 	userBytes, err := json.Marshal(user)
 	if err != nil {
