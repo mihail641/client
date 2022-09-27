@@ -24,6 +24,7 @@ func NewController() *Controller {
 // HandleHttp метод контроллера для запуска алгоритма модели, и возврата в роутер данных в формате xml
 func (m *Controller) HandleHttp(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("Сервер запустился")
+
 	//ClientAlgorithmTake метод модели
 	var t, err = m.controller.ClientAlgorithmTake()
 	if err != nil {
