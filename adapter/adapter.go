@@ -52,7 +52,11 @@ func (m *Adapter) MakeRequestGet() ([]User, error) {
 		return []User{}, err
 
 	}
+
 	defer res.Body.Close()
+	if 200 != res.StatusCode {
+		return nil, fmt.Errorf("%s", res.Body)
+	}
 	body, err := ioutil.ReadAll(res.Body) // response body is []byte
 	if err != nil {
 		fmt.Println("Ошибка перевода ответа в строку", err)
@@ -96,6 +100,9 @@ func (m *Adapter) MakeRequestCreate(user User) (User, error) {
 		return User{}, err
 	}
 	defer res.Body.Close()
+	if 200 != res.StatusCode {
+		return User{}, fmt.Errorf("%s", res.Body)
+	}
 	body, err := ioutil.ReadAll(res.Body) // response body is []byte
 	if err != nil {
 		fmt.Println("Ошибка перевода ответа в строку", err)
@@ -123,7 +130,11 @@ func (m *Adapter) MakeRequestDelete(IdMax int) (User, error) {
 		fmt.Println("Ошибка подключения к клиенту", err)
 		return User{}, err
 	}
+
 	defer res.Body.Close()
+	if 200 != res.StatusCode {
+		return User{}, fmt.Errorf("%s", res.Body)
+	}
 	body, err := ioutil.ReadAll(res.Body) // response body is []byte
 	if err != nil {
 		fmt.Println("Ошибка перевода ответа в строку", err)
@@ -164,6 +175,9 @@ func (m *Adapter) MakeRequestUpdate(user User) (User, error) {
 		return User{}, err
 	}
 	defer res.Body.Close()
+	if 200 != res.StatusCode {
+		return User{}, fmt.Errorf("%s", res.Body)
+	}
 	body, err := ioutil.ReadAll(res.Body) // response body is []byte
 	if err != nil {
 		fmt.Println("Ошибка перевода ответа в строку", err)
