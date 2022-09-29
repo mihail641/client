@@ -68,12 +68,12 @@ func (d *Model) ClientAlgorithmTake() ([]adapter.User, error) {
 		return []adapter.User{}, err
 	}
 	//обращение к модели адаптера к получению новых значений БД
-	t, err := d.adapter.MakeRequestGet()
+	users, err := d.adapter.MakeRequestGet()
 	if err != nil {
 		m := "Ошибка выполнеия 2 функции получения информации о всех пользователях: %s"
 		fmt.Println(m, err)
 		return []adapter.User{}, err
 	}
-	fmt.Println(t)
-	return t, nil
+	fmt.Println(users)
+	return users, nil
 }
