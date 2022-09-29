@@ -36,6 +36,10 @@ func (m *Controller) HandleHttp(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("Срез структуры перед XML", t)
 	//	//установливаем заголовок «Content-Type: application/xml», т.к. потому что мы отправляем данные XML с запросом через роутер
 	res.Header().Set("Content-Type", "application/xml")
+	if err != nil {
+		res.Header().Set("Content-Type", "text/html")
+
+	}
 	//кодирование в xml результата выполнения метода и передача в пакет main
 	xml.NewEncoder(res).Encode(&t)
 }
