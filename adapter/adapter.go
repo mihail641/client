@@ -14,6 +14,12 @@ import (
 	"net/http"
 )
 
+//type User struct {
+//	ID   int    `xml:"id",json:"id"`
+//	Name string `xml:"name",json:"name"`
+//	Sale int    `xml:"sale",json:"sale"`
+//}
+
 //постоянные URL
 const (
 	URL    = "http://127.0.0.1:4000/user"
@@ -21,26 +27,21 @@ const (
 )
 
 // User структура
-type User struct {
-	ID   int    `xml:"id",json:"id"`
-	Name string `xml:"name",json:"name"`
-	Sale int    `xml:"sale",json:"sale"`
-}
 
 // Client структура
-type Adapter struct {
+type DataBaseAdapter struct {
 	HTTPClient http.Client
 }
 
 //конструктор адаптера
-func NewAdapter() *Adapter {
-	return &Adapter{
+func NewDataBaseAdapter() *DataBaseAdapter {
+	return &DataBaseAdapter{
 		HTTPClient: http.Client{},
 	}
 }
 
 // MakeRequestGet метод получения всех значений БД
-func (m *Adapter) MakeRequestGet() ([]User, error) {
+func (m *DataBaseAdapter) MakeRequestGet() ([]User, error) {
 	req, err := http.NewRequest("GET", URLGET, nil)
 	if err != nil {
 		fmt.Println("Проблема с адресом", err)
@@ -76,7 +77,7 @@ func (m *Adapter) MakeRequestGet() ([]User, error) {
 }
 
 // MakeRequestCreate метод адаптера создания нового значения
-func (m *Adapter) MakeRequestCreate(user User) (User, error) {
+func (m *DataBaseAdapter) MakeRequestCreate(user User) (User, error) {
 
 	//var user User
 	//user = User{
@@ -114,7 +115,7 @@ func (m *Adapter) MakeRequestCreate(user User) (User, error) {
 }
 
 // MakeRequestDelete метод адаптера удаление значений по максимальному id
-func (m *Adapter) MakeRequestDelete(IdMax int) (User, error) {
+func (m *DataBaseAdapter) MakeRequestDelete(IdMax int) (User, error) {
 	id := strconv.Itoa(IdMax)
 	fmt.Println("Максимально id", id)
 	id = url.PathEscape(id)
@@ -147,7 +148,7 @@ func (m *Adapter) MakeRequestDelete(IdMax int) (User, error) {
 }
 
 // MakeRequestUpdate метод адаптера изменения значений БД по минимальному id
-func (m *Adapter) MakeRequestUpdate(user User) (User, error) {
+func (m *DataBaseAdapter) MakeRequestUpdate(user User) (User, error) {
 	//var user User
 	//user.ID = IdMin
 	//user = User{
@@ -192,7 +193,7 @@ func (m *Adapter) MakeRequestUpdate(user User) (User, error) {
 }
 
 // Min метод адаптера нахождения минимального id в структуре
-func (m *Adapter) Min(p []User) int {
+func (m *DataBaseAdapter) Min(p []User) int {
 
 	var k []int
 
@@ -209,7 +210,7 @@ func (m *Adapter) Min(p []User) int {
 }
 
 // Max метод адаптера по определению в БД максимального значения id
-func (m *Adapter) Max(p []User) int {
+func (m *DataBaseAdapter) Max(p []User) int {
 	var k []int
 	for _, rec := range p {
 		k = append(
