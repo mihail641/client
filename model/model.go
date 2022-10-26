@@ -7,19 +7,20 @@ import (
 
 //Model структура используется для конструктора контроллер
 type Model struct {
-	adapter     adapter.IAdapter
-	AdapterType *adapter.AdapterType
+	adapter adapter.IAdapter
 }
 
 // NewModel конструктор модели
-func NewModel(p adapter.AdapterType) *Model {
-	switch p {
-	case adapter.DataBaseAdapterType:
-		adapter.NewDataBaseAdapter()
-	case adapter.FileAdapterType:
-		adapter.NewFileAdapter()
+func NewModel(concreteAdapterType adapter.AdapterType) *Model {
+	var m adapter.IAdapter
+
+	switch concreteAdapterType {
+	case adapter.DB:
+		m = adapter.NewDataBaseAdapter()
+	case adapter.File:
+		m = adapter.NewFileAdapter()
 	}
-	return &Model{}
+	return &Model{adapter: m}
 
 }
 
@@ -49,7 +50,7 @@ func (d *Model) ClientAlgorithmTake() ([]adapter.User, error) {
 	}
 	fmt.Println("user.ID", IdMin)
 
-	_, err = d.adapter.MakeRequestUpdate(user1.ID, user1.Name, user1.Sale)
+	_, err = d.adapter.MakeRequestUpdate(user1)
 	if err != nil {
 		m := "Ошибка выполнеия  функции изменения пользователя"
 		fmt.Println(m, err)
