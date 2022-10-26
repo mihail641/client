@@ -1,6 +1,6 @@
 package adapter
 
-const FileAdapterType = "File"
-const DataBaseAdapterType = "DataBase"
+const File AdapterType = "file"
+const DB AdapterType = "db"
 
 type AdapterType string

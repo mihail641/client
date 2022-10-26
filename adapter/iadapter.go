@@ -9,7 +9,7 @@ type User struct {
 type IAdapter interface {
 	MakeRequestGet() ([]User, error)
 	MakeRequestCreate(user User) (User, error)
-	MakeRequestUpdate(idMin int, name string, sale int) (User, error)
+	MakeRequestUpdate(user User) (User, error)
 	MakeRequestDelete(idMax int) (User, error)
 	Max(p []User) int
 	Min(p []User) int
