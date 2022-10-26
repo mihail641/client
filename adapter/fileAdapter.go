@@ -21,29 +21,29 @@ type FileAdapter struct {
 //	Sale int    `xml:"sale",json:"sale"`
 //}
 
-func NewFileAdapter() *FileAdapter {
-	File, err := os.Open("file_storage")
-	if err != nil {
-		m := "Ошибка выполнеия открытия файла: %s"
-		fmt.Println(m, err)
-	}
-	defer File.Close()
+func NewFileAdapter() (*FileAdapter, error) {
 
-	return &FileAdapter{}
+	return &FileAdapter{}, nil
 }
 
-func file() (File *os.File) {
-	File, err := os.Open("file_storage")
+func file() (File *os.File, err error) {
+	File, err = os.Open("file_storage")
 	if err != nil {
 		m := "Ошибка выполнеия открытия файла: %s"
 		fmt.Println(m, err)
+		return nil, err
 	}
 	defer File.Close()
 
-	return File
+	return File, nil
 }
 func (f *FileAdapter) MakeRequestGet() ([]User, error) {
-	File := file()
+	File, err := file()
+	if err != nil {
+		m := "Ошибка выполнеия открытия файла: %s"
+		fmt.Println(m, err)
+		return nil, err
+	}
 	//File, err := os.Open("file_storage")
 	//if err != nil {
 	//	m := "Ошибка выполнеия открытия файла: %s"
@@ -90,16 +90,8 @@ func (f *FileAdapter) MakeRequestGet() ([]User, error) {
 
 }
 func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
-	File := file()
-	//var (
-	//	File *os.File
-	//)
-	//File, err := os.Open("file_storage")
-	//if err != nil {
-	//	m := "Ошибка выполнеия открытия файла: %s"
-	//	fmt.Println(m, err)
-	//}
-	//defer File.Close()
+	File, err := file()
+
 	reader := bufio.NewReader(File)
 	slice := make([]string, 0)
 	//for {
@@ -152,7 +144,7 @@ func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
 	return User{}, err
 }
 func (f *FileAdapter) MakeRequestDelete(IdMax int) (User, error) {
-	File := file()
+	File, err := file()
 	//var (
 	//	File *os.File
 	//)
@@ -187,7 +179,7 @@ func (f *FileAdapter) MakeRequestDelete(IdMax int) (User, error) {
 	msg := strings.Join(slice, "\n")
 	fmt.Println("Получившаяся строка", msg)
 
-	err := os.WriteFile("file_storage", []byte(msg), 0666)
+	err = os.WriteFile("file_storage", []byte(msg), 0666)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -196,7 +188,7 @@ func (f *FileAdapter) MakeRequestDelete(IdMax int) (User, error) {
 }
 
 func (f *FileAdapter) MakeRequestUpdate(user User) (User, error) {
-	File := file()
+	File, err := file()
 	//var (
 	//	File *os.File
 	//)
@@ -234,7 +226,7 @@ func (f *FileAdapter) MakeRequestUpdate(user User) (User, error) {
 	slice = append(slice, stringUp)
 	msg := strings.Join(slice, "\n")
 	fmt.Println(msg)
-	err := os.WriteFile("file_storage", []byte(msg), 0666)
+	err = os.WriteFile("file_storage", []byte(msg), 0666)
 	if err != nil {
 		log.Fatal(err)
 	}
