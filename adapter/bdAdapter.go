@@ -28,12 +28,12 @@ const (
 
 // User структура
 
-// Client структура
+// Client структура для работы с БД
 type DataBaseAdapter struct {
 	HTTPClient http.Client
 }
 
-//конструктор адаптера
+//конструктор адаптера для работы с БД
 func NewDataBaseAdapter() *DataBaseAdapter {
 	return &DataBaseAdapter{
 		HTTPClient: http.Client{},
@@ -78,12 +78,6 @@ func (m *DataBaseAdapter) MakeRequestGet() ([]User, error) {
 
 // MakeRequestCreate метод адаптера создания нового значения
 func (m *DataBaseAdapter) MakeRequestCreate(user User) (User, error) {
-
-	//var user User
-	//user = User{
-	//	Name: "RED",
-	//	Sale: 895,
-	//}
 	userBytes, err := json.Marshal(user)
 	if err != nil {
 		fmt.Println(err)

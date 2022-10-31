@@ -6,6 +6,7 @@ type User struct {
 	Sale int    `xml:"sale",json:"sale"`
 }
 
+// IAdapter интерфейс объединяющие методы двух объектов
 type IAdapter interface {
 	MakeRequestGet() ([]User, error)
 	MakeRequestCreate(user User) (User, error)
