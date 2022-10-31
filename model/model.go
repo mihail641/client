@@ -10,7 +10,7 @@ type Model struct {
 	adapter adapter.IAdapter
 }
 
-// NewModel конструктор модели
+// NewModel конструктор модели, осуществляющий выбор по значению флага необходимого адаптера
 func NewModel(concreteAdapterType adapter.AdapterType) *Model {
 	var m adapter.IAdapter
 
@@ -18,7 +18,7 @@ func NewModel(concreteAdapterType adapter.AdapterType) *Model {
 	case adapter.DB:
 		m = adapter.NewDataBaseAdapter()
 	case adapter.File:
-		m = adapter.NewFileAdapter()
+		m, _ = adapter.NewFileAdapter()
 	}
 	return &Model{adapter: m}
 
