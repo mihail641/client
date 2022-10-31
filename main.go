@@ -11,10 +11,12 @@ import (
 )
 
 func main() {
+	//получение и считывание значения флага, возможные значения флага берутся из adapterType
 	var concreteAdapterType string
 	flag.StringVar(&concreteAdapterType, "concreteAdapterType", "adapter.File", "adapter.Db")
 	flag.Parse()
 	var p adapter.AdapterType
+	//присваивание считанного значения флага структуре adapterType
 	p = adapter.AdapterType(concreteAdapterType)
 	//adType:=make([]string,0)
 	//adType=append(adType, adapter.FileAdapterType)
