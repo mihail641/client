@@ -12,43 +12,38 @@ import (
 
 //Структура адаптера при работе с файлом
 type FileAdapter struct {
-	File os.File
+	BaseAdapter
+	file   *os.File
+	reader *bufio.Reader
+	err    error
 }
 
 //Конструктор адаптера при работе с файлом
 func NewFileAdapter() (*FileAdapter, error) {
-
-	return &FileAdapter{}, nil
-}
-
-//file -функция позволяющая открывать нужный файл file_storage
-func file() (File *os.File, err error) {
-	File, err = os.Open("file_storage")
+	file, err := os.Open("file_storage")
 	if err != nil {
 		m := "Ошибка выполнеия открытия файла: %s"
 		fmt.Println(m, err)
 		return nil, err
 	}
-	defer File.Close()
+	//defer file.Close()
+	reader := bufio.NewReader(file)
 
-	return File, nil
+	return &FileAdapter{
+		file:   file,
+		reader: reader,
+	}, err
+}
+func (f *FileAdapter) Close() {
+	f.file.Close()
+	return
 }
 
 // MakeRequestGet метод получения всех значений из файла
 func (f *FileAdapter) MakeRequestGet() ([]User, error) {
-	//открытие файла, в случае неудачи возвращает ошибку
-	File, err := file()
-	if err != nil {
-		m := "Ошибка выполнеия открытия файла: %s"
-		fmt.Println(m, err)
-		return nil, err
-	}
-	//считывает информацию из файла
-	reader := bufio.NewReader(File)
-	//создание слайса для построчной записи строк, находящейся в файле
 	slice := make([]string, 0)
 	for {
-		str, err := reader.ReadString('\n')
+		str, err := f.reader.ReadString('\n')
 		if err != nil {
 			break
 		}
@@ -92,18 +87,9 @@ func (f *FileAdapter) MakeRequestGet() ([]User, error) {
 
 // MakeRequestCreate метод адаптера создания нового значения в файл
 func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
-	//открытие файла, в случае неудачи возвращает ошибку
-	File, err := file()
-	if err != nil {
-		m := "Ошибка выполнеия открытия файла: %s"
-		fmt.Println(m, err)
-		return User{}, err
-	}
-	//считывает информацию из файла
-	reader := bufio.NewReader(File)
 	slice := make([]string, 0)
 	//считывает первую строку из файла
-	str, err := reader.ReadString('\n')
+	str, err := f.reader.ReadString('\n')
 	if err != nil {
 		fmt.Println("Строка не читается", err)
 
@@ -155,19 +141,9 @@ func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
 
 // MakeRequestDelete метод адаптера удаление значений по максимальному id
 func (f *FileAdapter) MakeRequestDelete(IdMax int) (User, error) {
-	//открытие файла, в случае неудачи возвращает ошибку
-	File, err := file()
-	if err != nil {
-		m := "Ошибка выполнеия открытия файла: %s"
-		fmt.Println(m, err)
-		return User{}, err
-	}
-	//считывает информацию из файла
-	reader := bufio.NewReader(File)
-	//создание слайса для построчной записи строк, находящейся в файле
 	slice := make([]string, 0)
 	for {
-		str, err := reader.ReadString('\n')
+		str, err := f.reader.ReadString('\n')
 		if err != nil {
 			break
 		}
@@ -190,7 +166,7 @@ func (f *FileAdapter) MakeRequestDelete(IdMax int) (User, error) {
 	msg := strings.Join(slice, "\n")
 	fmt.Println("Получившаяся строка", msg)
 	//запись всех строк без удаленной строки в файл
-	err = os.WriteFile("file_storage", []byte(msg), 0666)
+	err := os.WriteFile("file_storage", []byte(msg), 0666)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -200,15 +176,7 @@ func (f *FileAdapter) MakeRequestDelete(IdMax int) (User, error) {
 
 // MakeRequestUpdate метод адаптера изменения значений БД по минимальному id
 func (f *FileAdapter) MakeRequestUpdate(user User) (User, error) {
-	//открытие файла, в случае неудачи возвращает ошибку
-	File, err := file()
-	if err != nil {
-		m := "Ошибка выполнеия открытия файла: %s"
-		fmt.Println(m, err)
-		return User{}, err
-	}
-	//	//считывает информацию из файла
-	reader := bufio.NewReader(File)
+
 	slice := make([]string, 0)
 	//создается строка из данных структуры User переданной из модели, разделяется табуляцией и
 	//знаком новой строки в конце, объединяется в 1 строку
@@ -220,7 +188,7 @@ func (f *FileAdapter) MakeRequestUpdate(user User) (User, error) {
 	stringUp := strings.Join(stringUpdate, "\t")
 	fmt.Println("Строка в добавление", stringUp)
 	for {
-		str, err := reader.ReadString('\n')
+		str, err := f.reader.ReadString('\n')
 		if err != nil {
 			break
 		}
@@ -240,45 +208,45 @@ func (f *FileAdapter) MakeRequestUpdate(user User) (User, error) {
 	msg := strings.Join(slice, "\n")
 	fmt.Println(msg)
 	//запись всех строк в файл
-	err = os.WriteFile("file_storage", []byte(msg), 0666)
+	err := os.WriteFile("file_storage", []byte(msg), 0666)
 	if err != nil {
 		log.Fatal(err)
 	}
 	return User{}, err
 }
 
-// Min метод адаптера по определению в файле максимального значения id
-func (f *FileAdapter) Min(p []User) int {
-
-	var k []int
-
-	for _, rec := range p {
-		k = append(k, rec.ID)
-	}
-	IdMin := k[0]
-	for _, value := range k {
-		if value < IdMin {
-			IdMin = value
-		}
-	}
-	return IdMin
-}
-
-// Max метод адаптера по определению в файле максимального значения id
-func (f *FileAdapter) Max(p []User) int {
-	var k []int
-	for _, rec := range p {
-		k = append(
-			k,
-			rec.ID,
-		)
-	}
-	IdMax := k[0]
-	for _, value := range k {
-		if value > IdMax {
-			IdMax = value
-		}
-	}
-	fmt.Println(IdMax)
-	return IdMax
-}
+//// Min метод адаптера по определению в файле максимального значения id
+//func (f *FileAdapter) Min(p []User) int {
+//
+//	var k []int
+//
+//	for _, rec := range p {
+//		k = append(k, rec.ID)
+//	}
+//	IdMin := k[0]
+//	for _, value := range k {
+//		if value < IdMin {
+//			IdMin = value
+//		}
+//	}
+//	return IdMin
+//}
+//
+//// Max метод адаптера по определению в файле максимального значения id
+//func (f *FileAdapter) Max(p []User) int {
+//	var k []int
+//	for _, rec := range p {
+//		k = append(
+//			k,
+//			rec.ID,
+//		)
+//	}
+//	IdMax := k[0]
+//	for _, value := range k {
+//		if value > IdMax {
+//			IdMax = value
+//		}
+//	}
+//	fmt.Println(IdMax)
+//	return IdMax
+//}

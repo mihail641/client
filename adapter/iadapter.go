@@ -1,11 +1,5 @@
 package adapter
 
-type User struct {
-	ID   int    `xml:"id",json:"id"`
-	Name string `xml:"name",json:"name"`
-	Sale int    `xml:"sale",json:"sale"`
-}
-
 // IAdapter интерфейс объединяющие методы двух объектов
 type IAdapter interface {
 	MakeRequestGet() ([]User, error)
@@ -14,4 +8,5 @@ type IAdapter interface {
 	MakeRequestDelete(idMax int) (User, error)
 	Max(p []User) int
 	Min(p []User) int
+	Close()
 }
