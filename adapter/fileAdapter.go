@@ -12,6 +12,7 @@ import (
 
 //Структура адаптера при работе с файлом
 type FileAdapter struct {
+	//композиция типа для вычисления минимального и максимального id
 	BaseAdapter
 	file   *os.File
 	reader *bufio.Reader
@@ -41,6 +42,7 @@ func (f *FileAdapter) Close() {
 
 // MakeRequestGet метод получения всех значений из файла
 func (f *FileAdapter) MakeRequestGet() ([]User, error) {
+	//формируется слайс из строк файла, каждая строка записывается как отдельный элемент
 	slice := make([]string, 0)
 	for {
 		str, err := f.reader.ReadString('\n')
@@ -87,6 +89,7 @@ func (f *FileAdapter) MakeRequestGet() ([]User, error) {
 
 // MakeRequestCreate метод адаптера создания нового значения в файл
 func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
+	//формируется слайс из 1 строки файла,
 	slice := make([]string, 0)
 	//считывает первую строку из файла
 	str, err := f.reader.ReadString('\n')
@@ -141,6 +144,7 @@ func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
 
 // MakeRequestDelete метод адаптера удаление значений по максимальному id
 func (f *FileAdapter) MakeRequestDelete(IdMax int) (User, error) {
+	//формируется слайс из строк файла, каждая строка записывается как отдельный элемент
 	slice := make([]string, 0)
 	for {
 		str, err := f.reader.ReadString('\n')
@@ -176,7 +180,7 @@ func (f *FileAdapter) MakeRequestDelete(IdMax int) (User, error) {
 
 // MakeRequestUpdate метод адаптера изменения значений БД по минимальному id
 func (f *FileAdapter) MakeRequestUpdate(user User) (User, error) {
-
+	//формируется слайс из 1 строки файла,
 	slice := make([]string, 0)
 	//создается строка из данных структуры User переданной из модели, разделяется табуляцией и
 	//знаком новой строки в конце, объединяется в 1 строку
@@ -214,39 +218,3 @@ func (f *FileAdapter) MakeRequestUpdate(user User) (User, error) {
 	}
 	return User{}, err
 }
-
-//// Min метод адаптера по определению в файле максимального значения id
-//func (f *FileAdapter) Min(p []User) int {
-//
-//	var k []int
-//
-//	for _, rec := range p {
-//		k = append(k, rec.ID)
-//	}
-//	IdMin := k[0]
-//	for _, value := range k {
-//		if value < IdMin {
-//			IdMin = value
-//		}
-//	}
-//	return IdMin
-//}
-//
-//// Max метод адаптера по определению в файле максимального значения id
-//func (f *FileAdapter) Max(p []User) int {
-//	var k []int
-//	for _, rec := range p {
-//		k = append(
-//			k,
-//			rec.ID,
-//		)
-//	}
-//	IdMax := k[0]
-//	for _, value := range k {
-//		if value > IdMax {
-//			IdMax = value
-//		}
-//	}
-//	fmt.Println(IdMax)
-//	return IdMax
-//}
