@@ -26,6 +26,7 @@ func NewModel(concreteAdapterType adapter.AdapterType) *Model {
 
 // ClientAlgorithmTake метод модели
 func (d *Model) ClientAlgorithmTake() ([]adapter.User, error) {
+	//закрытие файла
 	defer d.adapter.Close()
 	//MakeRequestGet получение из адаптера всех пользователей БД
 	user, err := d.adapter.MakeRequestGet()
@@ -49,14 +50,12 @@ func (d *Model) ClientAlgorithmTake() ([]adapter.User, error) {
 		Sale: 654,
 	}
 	fmt.Println("user.ID", IdMin)
-	d.adapter.Close()
 	_, err = d.adapter.MakeRequestUpdate(user1)
 	if err != nil {
 		m := "Ошибка выполнеия  функции изменения пользователя"
 		fmt.Println(m, err)
 		return []adapter.User{}, err
 	}
-	d.adapter.Close()
 
 	//обращение к модели адаптера к удалению максимального по id значения БД
 	_, err = d.adapter.MakeRequestDelete(IdMax)
@@ -71,7 +70,6 @@ func (d *Model) ClientAlgorithmTake() ([]adapter.User, error) {
 		Name: "RED",
 		Sale: 895,
 	}
-	d.adapter.Close()
 
 	//обращение к модели адаптера к созданию нового значения БД
 	_, err = d.adapter.MakeRequestCreate(user3)
@@ -80,7 +78,6 @@ func (d *Model) ClientAlgorithmTake() ([]adapter.User, error) {
 		fmt.Println(m, err)
 		return []adapter.User{}, err
 	}
-	d.adapter.Close()
 
 	//обращение к модели адаптера к получению новых значений БД
 	users, err := d.adapter.MakeRequestGet()
