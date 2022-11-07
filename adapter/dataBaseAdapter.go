@@ -15,23 +15,14 @@ import (
 	"net/http"
 )
 
-//type User struct {
-//	ID   int    `xml:"id",json:"id"`
-//	Name string `xml:"name",json:"name"`
-//	Sale int    `xml:"sale",json:"sale"`
-//}
-
 //постоянные URL
-const (
-	url1 = "http://127.0.0.1:4000/"
-	//URL    = "http://127.0.0.1:4000/user"
-	//URLGET = "http://127.0.0.1:4000/users"
-)
+const urlMain = "http://127.0.0.1:4000/"
 
 // User структура
 
 // Client структура для работы с БД
 type DataBaseAdapter struct {
+	//композиция типа для вычисления минимального и максимального id
 	BaseAdapter
 	HTTPClient http.Client
 }
@@ -48,7 +39,7 @@ func (m *DataBaseAdapter) Close() {
 
 // MakeRequestGet метод получения всех значений БД
 func (m *DataBaseAdapter) MakeRequestGet() ([]User, error) {
-	URLGET := url1 + "users"
+	URLGET := urlMain + "users"
 	req, err := http.NewRequest("GET", URLGET, nil)
 	if err != nil {
 		fmt.Println("Проблема с адресом", err)
@@ -85,8 +76,7 @@ func (m *DataBaseAdapter) MakeRequestGet() ([]User, error) {
 
 // MakeRequestCreate метод адаптера создания нового значения
 func (m *DataBaseAdapter) MakeRequestCreate(user User) (User, error) {
-	URL := url1 + "user"
-
+	URL := urlMain + "user"
 	userBytes, err := json.Marshal(user)
 	if err != nil {
 		fmt.Println(err)
@@ -119,7 +109,7 @@ func (m *DataBaseAdapter) MakeRequestCreate(user User) (User, error) {
 
 // MakeRequestDelete метод адаптера удаление значений по максимальному id
 func (m *DataBaseAdapter) MakeRequestDelete(IdMax int) (User, error) {
-	URL := url1 + "user"
+	URL := urlMain + "user"
 
 	id := strconv.Itoa(IdMax)
 	fmt.Println("Максимально id", id)
@@ -154,15 +144,7 @@ func (m *DataBaseAdapter) MakeRequestDelete(IdMax int) (User, error) {
 
 // MakeRequestUpdate метод адаптера изменения значений БД по минимальному id
 func (m *DataBaseAdapter) MakeRequestUpdate(user User) (User, error) {
-	//var user User
-	//user.ID = IdMin
-	//user = User{
-	//	ID:   user.ID,
-	//	Name: "Vova",
-	//	Sale: 654,
-	//}
-	//fmt.Println("user.ID", IdMin)
-	URL := url1 + "user"
+	URL := urlMain + "user"
 
 	userBytes, err := json.Marshal(user)
 	if err != nil {
@@ -197,39 +179,3 @@ func (m *DataBaseAdapter) MakeRequestUpdate(user User) (User, error) {
 	}
 	return user, err
 }
-
-//// Min метод адаптера нахождения минимального id в структуре
-//func (m *DataBaseAdapter) Min(p []User) int {
-//
-//	var k []int
-//
-//	for _, rec := range p {
-//		k = append(k, rec.ID)
-//	}
-//	IdMin := k[0]
-//	for _, value := range k {
-//		if value < IdMin {
-//			IdMin = value
-//		}
-//	}
-//	return IdMin
-//}
-//
-//// Max метод адаптера по определению в БД максимального значения id
-//func (m *DataBaseAdapter) Max(p []User) int {
-//	var k []int
-//	for _, rec := range p {
-//		k = append(
-//			k,
-//			rec.ID,
-//		)
-//	}
-//	IdMax := k[0]
-//	for _, value := range k {
-//		if value > IdMax {
-//			IdMax = value
-//		}
-//	}
-//	fmt.Println(IdMax)
-//	return IdMax
-//}

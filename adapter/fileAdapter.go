@@ -16,7 +16,6 @@ type FileAdapter struct {
 	BaseAdapter
 	file   *os.File
 	reader *bufio.Reader
-	err    error
 }
 
 //Конструктор адаптера при работе с файлом
@@ -49,6 +48,11 @@ func (f *FileAdapter) MakeRequestGet() ([]User, error) {
 		if err != nil {
 			break
 		}
+		// проверка на пустые строки
+		if len(strings.TrimSpace(str)) == 0 {
+			fmt.Println("Строка пустая")
+		}
+
 		fmt.Println(str)
 		//TrimRight возвращает срез строки str убирая перенос строки.
 		for i := 0; i < len(slice); i++ {
@@ -95,7 +99,7 @@ func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
 	str, err := f.reader.ReadString('\n')
 	if err != nil {
 		fmt.Println("Строка не читается", err)
-
+		return User{}, err
 	}
 	//TrimRight возвращает срез 1-ой строки str убирая перенос строки.
 	str = strings.TrimRight(str, "\n")
