@@ -2,18 +2,22 @@ package main
 
 import (
 	"example.com/kate/adapter"
+	"example.com/kate/config"
 	"example.com/kate/controller"
 	"flag"
 	"github.com/gorilla/mux"
 	"log"
-	//"log"
 	"net/http"
 )
 
 func main() {
+	var c config.Config
+	c = config.Get()
+	config.FaultAdapterTypeUrl(c)
+	flagComand := c.ConcreteAdapterType
 	//получение и считывание значения флага, возможные значения флага берутся из adapterType
 	var concreteAdapterType string
-	flag.StringVar(&concreteAdapterType, "concreteAdapterType", "adapter.File", "adapter.Db")
+	flag.StringVar(&concreteAdapterType, "concreteAdapterType", string(flagComand), "")
 	flag.Parse()
 	var p adapter.AdapterType
 	//присваивание считанного значения флага структуре adapterType
@@ -31,4 +35,5 @@ func main() {
 		con.HandleHttp(res, req)
 	}).Methods("GET")
 	log.Fatal(http.ListenAndServe(":5000", router))
+
 }
