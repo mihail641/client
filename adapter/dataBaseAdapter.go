@@ -3,6 +3,7 @@ package adapter
 import (
 	"bytes"
 	"encoding/json"
+	"example.com/kate/config"
 	"fmt"
 	"io"
 	"net/url"
@@ -16,7 +17,7 @@ import (
 )
 
 //постоянные URL
-const urlMain = "http://127.0.0.1:4000/"
+var UrlMain = config.Config{}.Url_add
 
 // User структура
 
@@ -39,7 +40,7 @@ func (m *DataBaseAdapter) Close() {
 
 // MakeRequestGet метод получения всех значений БД
 func (m *DataBaseAdapter) MakeRequestGet() ([]User, error) {
-	URLGET := urlMain + "users"
+	URLGET := UrlMain + "users"
 	req, err := http.NewRequest("GET", URLGET, nil)
 	if err != nil {
 		fmt.Println("Проблема с адресом", err)
@@ -76,7 +77,7 @@ func (m *DataBaseAdapter) MakeRequestGet() ([]User, error) {
 
 // MakeRequestCreate метод адаптера создания нового значения
 func (m *DataBaseAdapter) MakeRequestCreate(user User) (User, error) {
-	URL := urlMain + "user"
+	URL := UrlMain + "user"
 	userBytes, err := json.Marshal(user)
 	if err != nil {
 		fmt.Println(err)
@@ -109,7 +110,7 @@ func (m *DataBaseAdapter) MakeRequestCreate(user User) (User, error) {
 
 // MakeRequestDelete метод адаптера удаление значений по максимальному id
 func (m *DataBaseAdapter) MakeRequestDelete(IdMax int) (User, error) {
-	URL := urlMain + "user"
+	URL := UrlMain + "user"
 
 	id := strconv.Itoa(IdMax)
 	fmt.Println("Максимально id", id)
@@ -144,7 +145,7 @@ func (m *DataBaseAdapter) MakeRequestDelete(IdMax int) (User, error) {
 
 // MakeRequestUpdate метод адаптера изменения значений БД по минимальному id
 func (m *DataBaseAdapter) MakeRequestUpdate(user User) (User, error) {
-	URL := urlMain + "user"
+	URL := UrlMain + "user"
 
 	userBytes, err := json.Marshal(user)
 	if err != nil {
