@@ -2,6 +2,7 @@ package model
 
 import (
 	"example.com/kate/adapter"
+	"example.com/kate/adapterType"
 	"fmt"
 )
 
@@ -11,13 +12,13 @@ type Model struct {
 }
 
 // NewModel конструктор модели, осуществляющий выбор по значению флага необходимого адаптера
-func NewModel(concreteAdapterType adapter.AdapterType) *Model {
+func NewModel(concreteAdapterType adapterType.AdapterType) *Model {
 	var m adapter.IAdapter
 
 	switch concreteAdapterType {
-	case adapter.DB:
+	case adapterType.DB:
 		m = adapter.NewDataBaseAdapter()
-	case adapter.File:
+	case adapterType.File:
 		m, _ = adapter.NewFileAdapter()
 	}
 	return &Model{adapter: m}

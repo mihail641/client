@@ -1,7 +1,7 @@
 package main
 
 import (
-	"example.com/kate/adapter"
+	"example.com/kate/adapterType"
 	"example.com/kate/config"
 	"example.com/kate/controller"
 	"flag"
@@ -13,15 +13,14 @@ import (
 func main() {
 	var c config.Config
 	c = config.Get()
-	config.FaultAdapterTypeUrl(c)
 	flagComand := c.ConcreteAdapterType
 	//получение и считывание значения флага, возможные значения флага берутся из adapterType
 	var concreteAdapterType string
 	flag.StringVar(&concreteAdapterType, "concreteAdapterType", string(flagComand), "")
 	flag.Parse()
-	var p adapter.AdapterType
+	var p adapterType.AdapterType
 	//присваивание считанного значения флага структуре adapterType
-	p = adapter.AdapterType(concreteAdapterType)
+	p = adapterType.AdapterType(concreteAdapterType)
 	//adType:=make([]string,0)
 	//adType=append(adType, adapter.FileAdapterType)
 	//adType=append(adType,adapter.DataBaseAdapterType)
@@ -34,6 +33,7 @@ func main() {
 		con := controller.NewController(p)
 		con.HandleHttp(res, req)
 	}).Methods("GET")
+	log.Println("Starting HTTP server on :5000")
 	log.Fatal(http.ListenAndServe(":5000", router))
 
 }

@@ -2,7 +2,7 @@ package controller
 
 import (
 	"encoding/xml"
-	"example.com/kate/adapter"
+	"example.com/kate/adapterType"
 	"example.com/kate/model"
 	"fmt"
 	//"log"
@@ -16,7 +16,7 @@ type Controller struct {
 
 // NewController конструктор контроллера, возращающий экземпляр структуры Controller
 
-func NewController(AdapterType adapter.AdapterType) *Controller {
+func NewController(AdapterType adapterType.AdapterType) *Controller {
 
 	return &Controller{
 		controller: model.NewModel(AdapterType),

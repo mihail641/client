@@ -1,7 +1,8 @@
 package config
 
 import (
-	adapter "example.com/kate/adapter"
+	"errors"
+	"example.com/kate/adapterType"
 	"fmt"
 	"gopkg.in/ini.v1"
 	"os"
@@ -9,7 +10,7 @@ import (
 )
 
 type Config struct {
-	ConcreteAdapterType adapter.AdapterType
+	ConcreteAdapterType adapterType.AdapterType
 	Url_add             string
 }
 
@@ -25,25 +26,24 @@ func init() {
 	m := cfg.Section("").Key("Url_Add").String()
 
 	c = Config{
-		adapter.AdapterType(b),
+		adapterType.AdapterType(b),
 		m,
 	}
 	fmt.Println("Из ини файла", c.Url_add)
 	fmt.Println("Из ини файла ", c.ConcreteAdapterType)
-
+faultAdapterTypeUrl()
 }
 func Get() Config {
 	return c
 }
-func FaultAdapterTypeUrl(c Config) {
+func faultAdapterTypeUrl() (adapterTypeErr error, urlErr error){
+	if c.ConcreteAdapterType != adapterType.File && c.ConcreteAdapterType != adapterType.DB {
+		adapterTypeErr = errors.New("Задан неправильный флаг в файле my.ini" + string(c.ConcreteAdapterType))
 
-	if c.ConcreteAdapterType != adapter.File && c.ConcreteAdapterType != adapter.DB {
-
-		fmt.Println("Задан неправильный флаг в файле my.ini", c.ConcreteAdapterType)
 	}
-	err, _ := regexp.MatchString("^http://./$", c.Url_add)
-	if err != true {
+	_, urlErr = regexp.MatchString("^http://./$", c.Url_add)
+	if urlErr != nil {
 		fmt.Println("Ошибка в URL")
 	}
-
+	return adapterTypeErr, urlErr
 }

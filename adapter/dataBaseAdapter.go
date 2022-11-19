@@ -17,7 +17,7 @@ import (
 )
 
 //постоянные URL
-var UrlMain = config.Config{}.Url_add
+var UrlMain = config.Get().Url_add
 
 // User структура
 
