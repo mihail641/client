@@ -5,6 +5,7 @@ import (
 	"example.com/kate/config"
 	"example.com/kate/controller"
 	"flag"
+	"fmt"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -26,6 +27,7 @@ func main() {
 	//adType=append(adType,adapter.DataBaseAdapterType)
 	//запуск роутера
 	router := mux.NewRouter()
+	fmt.Println("А теперь запуск сервера")
 	//router.HandleFunc регистрация первого маршрута, с URL оканчивающимся на "/users" и методом GET, созадет новый экземпляр конструктора
 	//контроллера с аргументом DB, прием-передача параметров функции контроллера Getusers
 	router.HandleFunc("/do", func(res http.ResponseWriter, req *http.Request) {
@@ -33,6 +35,12 @@ func main() {
 		con := controller.NewController(p)
 		con.HandleHttp(res, req)
 	}).Methods("GET")
+	router.HandleFunc("/document", func(res http.ResponseWriter, req *http.Request) {
+		//userCtrl := controller.NewUserCtrl()
+		con := controller.NewDocumentController()
+		con.GetSimpleTable(res, req)
+	}).Methods("GET")
+
 	log.Println("Starting HTTP server on :5000")
 	log.Fatal(http.ListenAndServe(":5000", router))
 
