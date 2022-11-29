@@ -2,7 +2,7 @@ package config
 
 import (
 	"errors"
-	adapter "example.com/kate/adapter"
+	adapter "example.com/kate/adapterType"
 	"fmt"
 	"gopkg.in/ini.v1"
 	"os"
