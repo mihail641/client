@@ -6,12 +6,11 @@ import (
 	"net/http"
 )
 
-// Controller структура используется для конструктора контроллер
+// DocumentController структура используется для конструктора контроллер
 type DocumentController struct {
 }
 
-// NewController конструктор контроллера, возращающий экземпляр структуры Controller
-
+// NewDocumentController конструктор контроллера, возращающий экземпляр структуры Controller
 func NewDocumentController() *DocumentController {
 	return &DocumentController{}
 }
@@ -45,5 +44,4 @@ func (d *DocumentController) GetSimpleTable(res http.ResponseWriter, req *http.R
 	html := []byte(tableHTML)
 	fmt.Println(html)
 	res.Write(html)
-
 }
