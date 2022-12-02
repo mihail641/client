@@ -1,6 +1,10 @@
 package controller
 
 import (
+	//"encoding/json"
+	//"example.com/kate/adapter"
+	"example.com/kate/adapterType"
+	"example.com/kate/model"
 	"fmt"
 	"github.com/gorilla/mux"
 	"strconv"
@@ -10,11 +14,12 @@ import (
 
 // DocumentController структура используется для конструктора контроллер
 type DocumentController struct {
+	controller *model.Model
 }
 
 // NewDocumentController конструктор контроллера, возращающий экземпляр структуры Controller
-func NewDocumentController() *DocumentController {
-	return &DocumentController{}
+func NewDocumentController(AdapterType adapterType.AdapterType) *DocumentController {
+	return &DocumentController{controller: model.NewModel(AdapterType)}
 }
 
 // GetSimpleTable метод по выводу в браузере  таблицы с фиксированным количеством столбцов и строк
@@ -109,46 +114,25 @@ func (d *DocumentController) GetCertainSizeTable(res http.ResponseWriter, req *h
 	sizeColums, err := strconv.Atoi(sizeCols)
 	if err != nil {
 		m := "Ошибка перевода количества столбцов из string в int "
-		fmt.Println(
-			m,
-			err,
-		)
-		fmt.Fprintf(
-			res,
-			m,
-			err,
-		)
+		fmt.Println(m,err,)
+		fmt.Fprintf(res,m,err,)
 		return
 	}
-	fmt.Println(
-		"Количество столбцов",
-		sizeColums,
-	)
 	var sizeRows = params["sizeRows"]
 	//конвертация string в int
 	numRows, err := strconv.Atoi(sizeRows)
 	if err != nil {
 		m := "Ошибка перевода количества строк из string в int "
-		fmt.Println(
-			m,
-			err,
-		)
-		fmt.Fprintf(
-			res,
-			m,
-			err,
-		)
+		fmt.Println(m,err,)
+		fmt.Fprintf(res, m, err,)
 		return
 	}
-	fmt.Println(
-		"Количество строк",
-		numRows,
-	)
+
 	//заголовок таблицы
 	tableHead := `<html lang="ru">
 	<table border="1" width="600">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<thead>
+    <thead>
 	<tr>`
 	var table string
 	//цикл формирующий количество наименований колонок в зависимости от данных из URL
@@ -165,9 +149,9 @@ func (d *DocumentController) GetCertainSizeTable(res http.ResponseWriter, req *h
 		`</tr>
 	</thead>
 	<tbody>
-<tr>`
+    <tr>`
 	tableH := table + tableBody
-	l := 1
+	counter := 1
 	var tableBodyMain string
 	var tableMain string
 	var tableBodyFinishRow string
@@ -176,8 +160,8 @@ func (d *DocumentController) GetCertainSizeTable(res http.ResponseWriter, req *h
 	for j := 0; j < numRows; j++ {
 		tableMain = ""
 		for i := 0; i < sizeColums; i++ {
-			idText := strconv.Itoa(l)
-			l = l + 1
+			idText := strconv.Itoa(counter)
+			counter = counter + 1
 			tableBodyMain = `<td>Значение ` + idText + `</td>`
 			tableMain = tableMain + tableBodyMain
 		}

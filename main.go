@@ -33,7 +33,7 @@ func main() {
 	//запуск роутера
 	router := mux.NewRouter()
 	fmt.Println("А теперь запуск сервера")
-	//router.HandleFunc регистрация первого маршрута, с URL оканчивающимся на "/users" и методом GET, созадет новый экземпляр конструктора
+	//router.HandleFunc регистрация первого маршрута, с URL оканчивающимся на "/users" и методом GET, создает новый экземпляр конструктора
 	//контроллера с аргументом DB, прием-передача параметров функции контроллера Getusers
 	router.HandleFunc(
 		"/do",
@@ -51,7 +51,7 @@ func main() {
 	router.HandleFunc(
 		"/document",
 		func(res http.ResponseWriter, req *http.Request) {
-			con := controller.NewDocumentController()
+			con := controller.NewDocumentController(p)
 			con.GetSimpleTable(
 				res,
 				req,
@@ -64,7 +64,7 @@ func main() {
 		"/complex",
 		func(res http.ResponseWriter, req *http.Request) {
 			//userCtrl := controller.NewUserCtrl()
-			con := controller.NewDocumentController()
+			con := controller.NewDocumentController(p)
 			con.GetComplexTable(
 				res,
 				req,
@@ -77,8 +77,21 @@ func main() {
 		"/cols/{sizeCols}/rows/{sizeRows}",
 		func(res http.ResponseWriter, req *http.Request) {
 			//userCtrl := controller.NewUserCtrl()
-			con := controller.NewDocumentController()
+			con := controller.NewDocumentController(p)
 			con.GetCertainSizeTable(
+				res,
+				req,
+			)
+		},
+	).Methods("GET")
+	//router.HandleFunc регистрация маршрута, с URL оканчивающимся на /documentation и методом GET, создает новый экземпляр конструктора
+	//контроллера, прием-передача параметров метода GetDocumentationTable по получению таблицы html с документами, модулями и ошибками
+	router.HandleFunc(
+		"/documentation",
+		func(res http.ResponseWriter, req *http.Request) {
+			//userCtrl := controller.NewUserCtrl()
+			con := controller.NewDocumentController(p)
+			con.GetDocumentationTable(
 				res,
 				req,
 			)
