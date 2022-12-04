@@ -6,7 +6,6 @@ type IAdapter interface {
 	MakeRequestCreate(user User) (User, error)
 	MakeRequestUpdate(user User) (User, error)
 	MakeRequestDelete(idMax int) (User, error)
-	GetRezultDocumentation() ([]Document, error)
 	Max(p []User) int
 	Min(p []User) int
 	Close()

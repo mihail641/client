@@ -366,6 +366,3 @@ func (f *FileAdapter) MakeRequestUpdate(user User) (User, error) {
 	}
 	return User{}, err
 }
-func (f *FileAdapter) GetRezultDocumentation() ([]Document, error) {
-	return nil, nil
-}

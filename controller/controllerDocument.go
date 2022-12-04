@@ -1,10 +1,7 @@
 package controller
 
 import (
-	//"encoding/json"
-	//"example.com/kate/adapter"
 	"example.com/kate/adapterType"
-	"example.com/kate/model"
 	"fmt"
 	"github.com/gorilla/mux"
 	"strconv"
@@ -14,12 +11,11 @@ import (
 
 // DocumentController структура используется для конструктора контроллер
 type DocumentController struct {
-	controller *model.Model
 }
 
 // NewDocumentController конструктор контроллера, возращающий экземпляр структуры Controller
 func NewDocumentController(AdapterType adapterType.AdapterType) *DocumentController {
-	return &DocumentController{controller: model.NewModel(AdapterType)}
+	return &DocumentController{}
 }
 
 // GetSimpleTable метод по выводу в браузере  таблицы с фиксированным количеством столбцов и строк
@@ -179,3 +175,4 @@ func (d *DocumentController) GetCertainSizeTable(res http.ResponseWriter, req *h
 	//отправка в браузер
 	res.Write(html)
 }
+

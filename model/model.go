@@ -14,7 +14,6 @@ type Model struct {
 // NewModel конструктор модели, осуществляющий выбор по значению флага необходимого адаптера
 func NewModel(concreteAdapterType adapterType.AdapterType) *Model {
 	var m adapter.IAdapter
-
 	switch concreteAdapterType {
 	case adapterType.DB:
 		m = adapter.NewDataBaseAdapter()
@@ -117,23 +116,4 @@ func (d *Model) ClientAlgorithmTake() ([]adapter.User, error) {
 	fmt.Println(users)
 
 	return users, nil
-}
-func (d *Model) GetRezultDocumentation() ([]adapter.Document, error) {
-	//закрытие файла
-	defer d.adapter.Close()
-	//MakeRequestGet получение из адаптера всех пользователей БД
-	document, err := d.adapter.GetRezultDocumentation()
-	if err != nil {
-		m := "Ошибка выполнеия 1 функции получения информации о всех пользователях"
-		fmt.Println(
-			m,
-			err,
-		)
-		return []adapter.Document{}, err
-	}
-	fmt.Println(
-		"Переданная структура",
-		document,
-	)
-	return document, err
 }

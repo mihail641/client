@@ -17,7 +17,6 @@ type Controller struct {
 // NewController конструктор контроллера, возращающий экземпляр структуры Controller
 
 func NewController(AdapterType adapterType.AdapterType) *Controller {
-
 	return &Controller{
 		controller: model.NewModel(AdapterType),
 	}

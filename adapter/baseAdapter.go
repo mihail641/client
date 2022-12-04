@@ -4,7 +4,6 @@ import "fmt"
 
 type BaseAdapter struct {
 }
-
 // Min метод вычисление минимального id
 func (m *BaseAdapter) Min(p []User) int {
 
