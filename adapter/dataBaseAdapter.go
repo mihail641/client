@@ -54,7 +54,6 @@ func (m *DataBaseAdapter) MakeRequestGet() ([]User, error) {
 	if err != nil {
 		fmt.Println("проблема подключения к клиенту",err,)
 		return []User{}, err
-
 	}
 
 	defer res.Body.Close()
@@ -68,15 +67,11 @@ func (m *DataBaseAdapter) MakeRequestGet() ([]User, error) {
 	if err != nil {
 		fmt.Println("Ошибка перевода ответа в строку",err,)
 		return []User{}, err
-
 	}
 	fmt.Println(string(body))
 	p := []User{}
 	fmt.Println("Печать из функции",string(body),)
-	err = json.Unmarshal(
-		body,
-		&p,
-	)
+	err = json.Unmarshal(body, &p,)
 	if err != nil {
 		fmt.Println("Can not unmarshal JSON",err,)
 		return []User{}, err

@@ -42,10 +42,7 @@ func (f *FileAdapter) Close() {
 // MakeRequestGet метод получения всех значений из файла
 func (f *FileAdapter) MakeRequestGet() ([]User, error) {
 	//формируется слайс из строк файла, каждая строка записывается как отдельный элемент
-	slice := make(
-		[]string,
-		0,
-	)
+	slice := make([]string, 0,)
 	for {
 		str, err := f.reader.ReadString('\n')
 		if err != nil {

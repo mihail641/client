@@ -21,7 +21,6 @@ func NewModel(concreteAdapterType adapterType.AdapterType) *Model {
 		m, _ = adapter.NewFileAdapter()
 	}
 	return &Model{adapter: m}
-
 }
 
 // ClientAlgorithmTake метод модели

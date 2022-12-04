@@ -6,9 +6,7 @@ type BaseAdapter struct {
 }
 // Min метод вычисление минимального id
 func (m *BaseAdapter) Min(p []User) int {
-
 	var k []int
-
 	for _, rec := range p {
 		k = append(k, rec.ID)
 	}

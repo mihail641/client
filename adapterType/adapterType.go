@@ -1,5 +1,4 @@
 package adapterType
-
 // значения флагов
 const File AdapterType = "file"
 const DB AdapterType = "db"
