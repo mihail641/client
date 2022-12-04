@@ -19,8 +19,6 @@ import (
 //постоянные URL
 var UrlMain = config.Get().Url_add
 
-// User структура
-
 // Client структура для работы с БД
 type DataBaseAdapter struct {
 	//композиция типа для вычисления минимального и максимального id

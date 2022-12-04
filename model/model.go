@@ -1,5 +1,4 @@
 package model
-
 import (
 	"example.com/kate/adapter"
 	"example.com/kate/adapterType"

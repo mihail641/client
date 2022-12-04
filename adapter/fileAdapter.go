@@ -105,10 +105,7 @@ func (f *FileAdapter) MakeRequestGet() ([]User, error) {
 // MakeRequestCreate метод адаптера создания нового значения в файл
 func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
 	//формируется слайс из 1 строки файла,
-	slice := make(
-		[]string,
-		0,
-	)
+	slice := make([]string, 0,)
 	//считывает первую строку из файла
 	str, err := f.reader.ReadString('\n')
 	if err != nil {
