@@ -23,10 +23,7 @@ func NewFileAdapter() (*FileAdapter, error) {
 	file, err := os.Open("file_storage")
 	if err != nil {
 		m := "Ошибка выполнеия открытия файла: %s"
-		fmt.Println(
-			m,
-			err,
-		)
+		fmt.Println(m,err,)
 		return nil, err
 	}
 	//defer file.Close()
@@ -88,10 +85,7 @@ func (f *FileAdapter) MakeRequestGet() ([]User, error) {
 		m, err := strconv.Atoi(word[0])
 		if err != nil {
 			m := "Ошибка перевода из string в int: %s"
-			fmt.Println(
-				m,
-				err,
-			)
+			fmt.Println(m,err,)
 			return []User{}, err
 		}
 		fmt.Println(m)
@@ -99,20 +93,13 @@ func (f *FileAdapter) MakeRequestGet() ([]User, error) {
 		fmt.Println(p)
 		//перевод id из 	//создание слайса из слов
 		z, err := strconv.Atoi(word[2])
-		if err != nil {
-			m := "Ошибка перевода из string в int: %s"
-			fmt.Println(
-				m,
-				err,
-			)
+		if err != nil {	m := "Ошибка перевода из string в int: %s"
+			fmt.Println(m,err,)
 			return []User{}, err
 		}
 		fmt.Println(z)
 		//присваивание в структуру User значений из слайса
-		k = append(
-			k,
-			User{m, p, z},
-		)
+		k = append(	k, 	User{m, p, z},)
 	}
 	return k, nil
 
@@ -128,10 +115,7 @@ func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
 	//считывает первую строку из файла
 	str, err := f.reader.ReadString('\n')
 	if err != nil {
-		fmt.Println(
-			"Строка не читается",
-			err,
-		)
+		fmt.Println("Строка не читается",err,)
 		return User{}, err
 	}
 	//TrimRight возвращает срез 1-ой строки str убирая перенос строки.
@@ -191,10 +175,7 @@ func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
 			values,
 			"\t",
 		)
-		fmt.Println(
-			"Получившаяся строка",
-			msg,
-		)
+		fmt.Println("Получившаяся строка",msg,)
 		//запись новой строки в файл
 		f, err := os.OpenFile(
 			"file_storage",
@@ -202,19 +183,13 @@ func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
 			0600,
 		)
 		if err != nil {
-			fmt.Println(
-				"Ошибка открытия файла для записи",
-				err,
-			)
+			fmt.Println("Ошибка открытия файла для записи",	err,)
 		}
 		defer f.Close()
 
 		if _, err = f.WriteString(msg); err != nil {
 			if err != nil {
-				fmt.Println(
-					"Ошибка записи",
-					err,
-				)
+				fmt.Println("Ошибка записи",err,)
 			}
 		}
 
@@ -242,10 +217,7 @@ func (f *FileAdapter) MakeRequestDelete(IdMax int) (User, error) {
 			str,
 		)
 		if err != nil {
-			fmt.Println(
-				"Нахождение строки",
-				err,
-			)
+			fmt.Println("Нахождение строки", err,)
 		}
 		fmt.Println(r)
 		if r != true {
@@ -266,10 +238,7 @@ func (f *FileAdapter) MakeRequestDelete(IdMax int) (User, error) {
 		slice,
 		"\n",
 	)
-	fmt.Println(
-		"Получившаяся строка",
-		msg,
-	)
+	fmt.Println("Получившаяся строка",msg,)
 	//запись всех строк без удаленной строки в файл
 	err := os.WriteFile(
 		"file_storage",
@@ -309,58 +278,30 @@ func (f *FileAdapter) MakeRequestUpdate(user User) (User, error) {
 		stringUpdate,
 		strconv.Itoa(user.Sale),
 	)
-	stringUp := strings.Join(
-		stringUpdate,
-		"\t",
-	)
-	fmt.Println(
-		"Строка в добавление",
-		stringUp,
-	)
+	stringUp := strings.Join(stringUpdate,"\t",)
+	fmt.Println("Строка в добавление", stringUp,)
 	for {
 		str, err := f.reader.ReadString('\n')
 		if err != nil {
 			break
 		}
 		//нахождение строки содержащей изменяемый id
-		r, err := regexp.MatchString(
-			IdUpdate,
-			str,
-		)
+		r, err := regexp.MatchString(IdUpdate, str,)
 		if err != nil {
-			fmt.Println(
-				"Нахождение строки",
-				err,
-			)
+			fmt.Println("Нахождение строки",err,)
 		}
 		if r != true {
 			for i := 0; i < len(slice); i++ {
-				str = strings.TrimRight(
-					str,
-					"\n",
-				)
+				str = strings.TrimRight(str,"\n",)
 			}
-			slice = append(
-				slice,
-				str,
-			)
+			slice = append(slice,str,)
 		}
 	}
-	slice = append(
-		slice,
-		stringUp,
-	)
-	msg := strings.Join(
-		slice,
-		"\n",
-	)
+	slice = append(slice,stringUp,)
+	msg := strings.Join(slice,"\n",)
 	fmt.Println(msg)
 	//запись всех строк в файл
-	err := os.WriteFile(
-		"file_storage",
-		[]byte(msg),
-		0666,
-	)
+	err := os.WriteFile("file_storage",[]byte(msg),0666,)
 	if err != nil {
 		log.Fatal(err)
 	}

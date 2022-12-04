@@ -1,5 +1,4 @@
 package adapter
-
 // User структура пользователей с продажами
 type User struct {
 	ID   int    `xml:"id",json:"id"`

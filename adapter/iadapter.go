@@ -1,5 +1,6 @@
 package adapter
 
+
 // IAdapter интерфейс объединяющие методы двух объектов
 type IAdapter interface {
 	MakeRequestGet() ([]User, error)

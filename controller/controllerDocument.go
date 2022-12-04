@@ -123,7 +123,6 @@ func (d *DocumentController) GetCertainSizeTable(res http.ResponseWriter, req *h
 		fmt.Fprintf(res, m, err,)
 		return
 	}
-
 	//заголовок таблицы
 	tableHead := `<html lang="ru">
 	<table border="1" width="600">
@@ -138,7 +137,6 @@ func (d *DocumentController) GetCertainSizeTable(res http.ResponseWriter, req *h
     <th>Колонка название ` + id + `</th>`
 		table = table + tableName
 	}
-
 	table = tableHead + table
 	//начало тела таблицы
 	tableBody :=

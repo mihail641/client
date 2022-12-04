@@ -20,7 +20,6 @@ func (m *BaseAdapter) Min(p []User) int {
 	}
 	return IdMin
 }
-
 // Max метод адаптера по определению  максимального значения id
 func (m *BaseAdapter) Max(p []User) int {
 	var k []int

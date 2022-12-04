@@ -36,10 +36,8 @@ func Get() Config {
 	return c
 }
 func faultAdapterTypeUrl() (adapterTypeErr error, urlErr error) {
-
 	if c.ConcreteAdapterType != adapter.File && c.ConcreteAdapterType != adapter.DB {
 		adapterTypeErr = errors.New("Задан неправильный флаг в файле my.ini" + string(c.ConcreteAdapterType))
-
 	}
 	_, urlErr = regexp.MatchString("^http://./$", c.Url_add)
 	if urlErr != nil {
