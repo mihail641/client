@@ -25,7 +25,10 @@ func init() {
 	b := cfg.Section("").Key("ConcreteAdapterType").String()
 	m := cfg.Section("").Key("Url_Add").String()
 
-	c = Config{adapter.AdapterType(b), m}
+	c = Config{
+		adapter.AdapterType(b),
+		m,
+	}
 	fmt.Println("Из ини файла", c.Url_add)
 	fmt.Println("Из ини файла ", c.ConcreteAdapterType)
 	faultAdapterTypeUrl()

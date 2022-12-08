@@ -42,10 +42,7 @@ func (f *FileAdapter) Close() {
 // MakeRequestGet метод получения всех значений из файла
 func (f *FileAdapter) MakeRequestGet() ([]User, error) {
 	//формируется слайс из строк файла, каждая строка записывается как отдельный элемент
-	slice := make(
-		[]string,
-		0,
-	)
+	slice := make([]string, 0)
 	for {
 		str, err := f.reader.ReadString('\n')
 		if err != nil {
@@ -59,10 +56,7 @@ func (f *FileAdapter) MakeRequestGet() ([]User, error) {
 		fmt.Println(str)
 		//TrimRight возвращает срез строки str убирая перенос строки.
 		for i := 0; i < len(slice); i++ {
-			str = strings.TrimRight(
-				str,
-				"\n",
-			)
+			str = strings.TrimRight(str, "\n")
 		}
 		slice = append(slice, str)
 	}
@@ -94,6 +88,7 @@ func (f *FileAdapter) MakeRequestGet() ([]User, error) {
 		k = append(k, User{m, p, z})
 	}
 	return k, nil
+
 }
 
 // MakeRequestCreate метод адаптера создания нового значения в файл
@@ -111,6 +106,7 @@ func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
 	fmt.Println(str)
 	slice = append(slice, str)
 	fmt.Println(slice)
+
 	k := []User{}
 	//создание слайса из слов 1 строки
 	for i := 0; i < 1; i++ {
@@ -134,11 +130,7 @@ func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
 		msg := strings.Join(values, "\t")
 		fmt.Println("Получившаяся строка", msg)
 		//запись новой строки в файл
-		f, err := os.OpenFile(
-			"file_storage",
-			os.O_APPEND|os.O_WRONLY,
-			0600,
-		)
+		f, err := os.OpenFile("file_storage", os.O_APPEND|os.O_WRONLY, 0600)
 		if err != nil {
 			fmt.Println("Ошибка открытия файла для записи", err)
 		}
@@ -182,11 +174,7 @@ func (f *FileAdapter) MakeRequestDelete(IdMax int) (User, error) {
 	msg := strings.Join(slice, "\n")
 	fmt.Println("Получившаяся строка", msg)
 	//запись всех строк без удаленной строки в файл
-	err := os.WriteFile(
-		"file_storage",
-		[]byte(msg),
-		0666,
-	)
+	err := os.WriteFile("file_storage", []byte(msg), 0666)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -233,4 +221,7 @@ func (f *FileAdapter) MakeRequestUpdate(user User) (User, error) {
 		log.Fatal(err)
 	}
 	return User{}, err
+}
+func (f *FileAdapter) GetRezultDocumentation() ([]Document, error) {
+	return nil, nil
 }
