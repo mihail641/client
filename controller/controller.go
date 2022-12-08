@@ -11,21 +11,22 @@ import (
 
 // Controller структура используется для конструктора контроллер
 type Controller struct {
-	controller *model.Model
+	model *model.Model
 }
 
 // NewController конструктор контроллера, возращающий экземпляр структуры Controller
 func NewController(AdapterType adapterType.AdapterType) *Controller {
 	return &Controller{
-		controller: model.NewModel(AdapterType),
+		model: model.NewModel(AdapterType),
 	}
 }
 
 // HandleHttp метод контроллера для запуска алгоритма модели, и возврата в роутер данных в формате xml
 func (m *Controller) HandleHttp(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("Сервер запустился")
+	
 	//ClientAlgorithmTake метод модели
-	var t, err = m.controller.ClientAlgorithmTake()
+	var t, err = m.model.ClientAlgorithmTake()
 	if err != nil {
 		m := "Ошибка выполнеия контроллера: %s"
 		fmt.Println(m, err)
@@ -37,6 +38,7 @@ func (m *Controller) HandleHttp(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/xml")
 	if err != nil {
 		res.Header().Set("Content-Type", "text/html")
+		
 	}
 	//кодирование в xml результата выполнения метода и передача в пакет main
 	xml.NewEncoder(res).Encode(&t)

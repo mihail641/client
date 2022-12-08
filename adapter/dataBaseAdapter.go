@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"net/url"
-	
 	"os"
 	"strconv"
 	//"io"
@@ -18,6 +17,8 @@ import (
 
 //постоянные URL
 var UrlMain = config.Get().Url_add
+
+// User структура
 
 // Client структура для работы с БД
 type DataBaseAdapter struct {
@@ -48,9 +49,9 @@ func (m *DataBaseAdapter) MakeRequestGet() ([]User, error) {
 	if err != nil {
 		fmt.Println("проблема подключения к клиенту", err)
 		return []User{}, err
-		
+
 	}
-	
+
 	defer res.Body.Close()
 	if 200 != res.StatusCode {
 		return nil, fmt.Errorf("%s", res.Body)
@@ -59,6 +60,7 @@ func (m *DataBaseAdapter) MakeRequestGet() ([]User, error) {
 	if err != nil {
 		fmt.Println("Ошибка перевода ответа в строку", err)
 		return []User{}, err
+
 	}
 	fmt.Println(string(body))
 	p := []User{}
@@ -112,7 +114,7 @@ func (m *DataBaseAdapter) MakeRequestDelete(IdMax int) (User, error) {
 	fmt.Println("Максимально id", id)
 	id = url.PathEscape(id)
 	URLNew := URL + string("/") + id
-	
+
 	req, err := http.NewRequest("DELETE", URLNew, nil)
 	if err != nil {
 		fmt.Println(err)
@@ -123,7 +125,7 @@ func (m *DataBaseAdapter) MakeRequestDelete(IdMax int) (User, error) {
 		fmt.Println("Ошибка подключения к клиенту", err)
 		return User{}, err
 	}
-	
+
 	defer res.Body.Close()
 	if 200 != res.StatusCode {
 		return User{}, fmt.Errorf("%s", res.Body)
@@ -142,7 +144,7 @@ func (m *DataBaseAdapter) MakeRequestDelete(IdMax int) (User, error) {
 // MakeRequestUpdate метод адаптера изменения значений БД по минимальному id
 func (m *DataBaseAdapter) MakeRequestUpdate(user User) (User, error) {
 	URL := UrlMain + "user"
-	
+
 	userBytes, err := json.Marshal(user)
 	if err != nil {
 		fmt.Println(err)
@@ -150,6 +152,7 @@ func (m *DataBaseAdapter) MakeRequestUpdate(user User) (User, error) {
 	}
 	byteRead := bytes.NewReader(userBytes)
 	req, err := http.NewRequest("PUT", URL, byteRead)
+
 	if err != nil {
 		fmt.Println(err)
 		return User{}, err
@@ -171,8 +174,41 @@ func (m *DataBaseAdapter) MakeRequestUpdate(user User) (User, error) {
 	fmt.Println(string(body))
 	err = json.Unmarshal(body, &user)
 	if err != nil {
-		return User{}, fmt.Errorf(
-			"can't parse body as JSON: %w", err)
+		return User{}, fmt.Errorf("can't parse body as JSON: %w", err)
 	}
 	return user, err
+}
+func (m *DataBaseAdapter) GetRezultDocumentation() ([]Document, error) {
+	URLGET := UrlMain + "full"
+	req, err := http.NewRequest("GET", URLGET, nil)
+	if err != nil {
+		fmt.Println("Проблема с адресом", err)
+		return []Document{}, err
+	}
+	res, err := m.HTTPClient.Do(req)
+	if err != nil {
+		fmt.Println("проблема подключения к клиенту", err)
+		return []Document{}, err
+
+	}
+	defer res.Body.Close()
+	if 200 != res.StatusCode {
+		return nil, fmt.Errorf("%s", res.Body)
+	}
+	body, err := ioutil.ReadAll(res.Body) // response body is []byte
+	if err != nil {
+		fmt.Println("Ошибка перевода ответа в строку", err)
+		return []Document{}, err
+
+	}
+	fmt.Println(string(body))
+	p := []Document{}
+	fmt.Println("Печать из функции", string(body))
+	err = json.Unmarshal(body, &p)
+	if err != nil {
+		fmt.Println("Can not unmarshal JSON", err)
+		return []Document{}, err
+	}
+	fmt.Println("Структура", p)
+	return p, nil
 }

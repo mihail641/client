@@ -14,6 +14,7 @@ type Model struct {
 // NewModel конструктор модели, осуществляющий выбор по значению флага необходимого адаптера
 func NewModel(concreteAdapterType adapterType.AdapterType) *Model {
 	var m adapter.IAdapter
+
 	switch concreteAdapterType {
 	case adapterType.DB:
 		m = adapter.NewDataBaseAdapter()
@@ -49,10 +50,7 @@ func (d *Model) ClientAlgorithmTake() ([]adapter.User, error) {
 		Name: "Vova",
 		Sale: 654,
 	}
-	fmt.Println(
-		"user.ID",
-		IdMin,
-	)
+	fmt.Println("user.ID", IdMin)
 	_, err = d.adapter.MakeRequestUpdate(user1)
 	if err != nil {
 		m := "Ошибка выполнеия  функции изменения пользователя"
@@ -73,6 +71,7 @@ func (d *Model) ClientAlgorithmTake() ([]adapter.User, error) {
 		Name: "RED",
 		Sale: 895,
 	}
+
 	//обращение к модели адаптера к созданию нового значения БД
 	_, err = d.adapter.MakeRequestCreate(user3)
 	if err != nil {
@@ -80,6 +79,7 @@ func (d *Model) ClientAlgorithmTake() ([]adapter.User, error) {
 		fmt.Println(m, err)
 		return []adapter.User{}, err
 	}
+
 	//обращение к модели адаптера к получению новых значений БД
 	users, err := d.adapter.MakeRequestGet()
 	if err != nil {
@@ -88,5 +88,19 @@ func (d *Model) ClientAlgorithmTake() ([]adapter.User, error) {
 		return []adapter.User{}, err
 	}
 	fmt.Println(users)
+
 	return users, nil
+}
+func (d *Model) GetRezultDocumentation() ([]adapter.Document, error) {
+	//закрытие файла
+	defer d.adapter.Close()
+	//MakeRequestGet получение из адаптера всех пользователей БД
+	document, err := d.adapter.GetRezultDocumentation()
+	if err != nil {
+		m := "Ошибка выполнеия 1 функции получения информации о всех пользователях"
+		fmt.Println(m, err)
+		return []adapter.Document{}, err
+	}
+	fmt.Println("Переданная структура", document)
+	return document, err
 }
