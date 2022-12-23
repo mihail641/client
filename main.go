@@ -77,9 +77,20 @@ func main() {
 			con.GetDocumentationTable(res, req)
 		},
 	).Methods("GET")
+	////router.HandleFunc регистрация маршрута, с URL оканчивающимся на /directories и методом GET, создает новый экземпляр конструктора
+	//контроллера, прием-передача параметров метода GetDirectoriesTable по получению таблицы html
+	//из структуры любой вложенности
+	router.HandleFunc(
+		"/directories",
+		func(res http.ResponseWriter, req *http.Request) {
+			//userCtrl := controller.NewUserCtrl()
+			con := controller.NewDocumentController(p)
+			con.GetDirectoriesTable(res, req)
+		},
+	).Methods("GET")
 	log.Println("Starting HTTP server on :5000")
 	log.Fatal(
 		http.ListenAndServe(":5000", router),
 	)
-
+	
 }
