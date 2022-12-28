@@ -12,6 +12,7 @@ import (
 	//"io"
 	"io/ioutil"
 	//"log"
+	"example.com/projectApiClient"
 	"net/http"
 )
 
@@ -38,17 +39,17 @@ func (m *DataBaseAdapter) Close() {
 }
 
 // MakeRequestGet метод получения всех значений БД
-func (m *DataBaseAdapter) MakeRequestGet() ([]User, error) {
+func (m *DataBaseAdapter) MakeRequestGet() ([]projectApiClient.User, error) {
 	URLGET := UrlMain + "users"
 	req, err := http.NewRequest("GET", URLGET, nil)
 	if err != nil {
 		fmt.Println("Проблема с адресом", err)
-		return []User{}, err
+		return []projectApiClient.User{}, err
 	}
 	res, err := m.HTTPClient.Do(req)
 	if err != nil {
 		fmt.Println("проблема подключения к клиенту", err)
-		return []User{}, err
+		return []projectApiClient.User{}, err
 
 	}
 
@@ -59,56 +60,56 @@ func (m *DataBaseAdapter) MakeRequestGet() ([]User, error) {
 	body, err := ioutil.ReadAll(res.Body) // response body is []byte
 	if err != nil {
 		fmt.Println("Ошибка перевода ответа в строку", err)
-		return []User{}, err
+		return []projectApiClient.User{}, err
 
 	}
 	fmt.Println(string(body))
-	p := []User{}
+	p := []projectApiClient.User{}
 	fmt.Println("Печать из функции", string(body))
 	err = json.Unmarshal(body, &p)
 	if err != nil {
 		fmt.Println("Can not unmarshal JSON", err)
-		return []User{}, err
+		return []projectApiClient.User{}, err
 	}
 	fmt.Println("Структура", p)
 	return p, err
 }
 
 // MakeRequestCreate метод адаптера создания нового значения
-func (m *DataBaseAdapter) MakeRequestCreate(user User) (User, error) {
+func (m *DataBaseAdapter) MakeRequestCreate(user projectApiClient.User) (projectApiClient.User, error) {
 	URL := UrlMain + "user"
 	userBytes, err := json.Marshal(user)
 	if err != nil {
 		fmt.Println(err)
-		return User{}, err
+		return projectApiClient.User{}, err
 	}
 	byteRead := bytes.NewReader(userBytes)
 	req, err := http.NewRequest("POST", URL, byteRead)
 	if err != nil {
 		fmt.Println("Проблема чтения заголовка", err)
-		return User{}, err
+		return projectApiClient.User{}, err
 	}
 	res, err := m.HTTPClient.Do(req)
 	if err != nil {
 		fmt.Println("проблема подключения к клиенту", err)
-		return User{}, err
+		return projectApiClient.User{}, err
 	}
 	defer res.Body.Close()
 	if 200 != res.StatusCode {
-		return User{}, fmt.Errorf("%s", res.Body)
+		return projectApiClient.User{}, fmt.Errorf("%s", res.Body)
 	}
 	body, err := ioutil.ReadAll(res.Body) // response body is []byte
 	if err != nil {
 		fmt.Println("Ошибка перевода ответа в строку", err)
-		return User{}, err
+		return projectApiClient.User{}, err
 	} else {
 		fmt.Println(string(body))
-		return User{}, err
+		return projectApiClient.User{}, err
 	}
 }
 
 // MakeRequestDelete метод адаптера удаление значений по максимальному id
-func (m *DataBaseAdapter) MakeRequestDelete(IdMax int) (User, error) {
+func (m *DataBaseAdapter) MakeRequestDelete(IdMax int) (projectApiClient.User, error) {
 	URL := UrlMain + "user"
 	id := strconv.Itoa(IdMax)
 	fmt.Println("Максимально id", id)
@@ -118,77 +119,79 @@ func (m *DataBaseAdapter) MakeRequestDelete(IdMax int) (User, error) {
 	req, err := http.NewRequest("DELETE", URLNew, nil)
 	if err != nil {
 		fmt.Println(err)
-		return User{}, err
+		return projectApiClient.User{}, err
 	}
 	res, err := m.HTTPClient.Do(req)
 	if err != nil {
 		fmt.Println("Ошибка подключения к клиенту", err)
-		return User{}, err
+		return projectApiClient.User{}, err
 	}
 
 	defer res.Body.Close()
 	if 200 != res.StatusCode {
-		return User{}, fmt.Errorf("%s", res.Body)
+		return projectApiClient.User{}, fmt.Errorf("%s", res.Body)
 	}
 	body, err := ioutil.ReadAll(res.Body) // response body is []byte
 	if err != nil {
 		fmt.Println("Ошибка перевода ответа в строку", err)
-		return User{}, err
+		return projectApiClient.User{}, err
 	} else {
 		fmt.Println(string(body))
 		io.Copy(os.Stdout, res.Body)
-		return User{}, err
+		return projectApiClient.User{}, err
 	}
 }
 
 // MakeRequestUpdate метод адаптера изменения значений БД по минимальному id
-func (m *DataBaseAdapter) MakeRequestUpdate(user User) (User, error) {
+func (m *DataBaseAdapter) MakeRequestUpdate(user projectApiClient.User) (projectApiClient.User, error) {
 	URL := UrlMain + "user"
 
 	userBytes, err := json.Marshal(user)
 	if err != nil {
 		fmt.Println(err)
-		return User{}, err
+		return projectApiClient.User{}, err
 	}
 	byteRead := bytes.NewReader(userBytes)
 	req, err := http.NewRequest("PUT", URL, byteRead)
 
 	if err != nil {
 		fmt.Println(err)
-		return User{}, err
+		return projectApiClient.User{}, err
 	}
 	res, err := m.HTTPClient.Do(req)
 	if err != nil {
 		fmt.Println("Проблема подключения к клиенту", err)
-		return User{}, err
+		return projectApiClient.User{}, err
 	}
 	defer res.Body.Close()
 	if 200 != res.StatusCode {
-		return User{}, fmt.Errorf("%s", res.Body)
+		return projectApiClient.User{}, fmt.Errorf("%s", res.Body)
 	}
 	body, err := ioutil.ReadAll(res.Body) // response body is []byte
 	if err != nil {
 		fmt.Println("Ошибка перевода ответа в строку", err)
-		return User{}, err
+		return projectApiClient.User{}, err
 	}
 	fmt.Println(string(body))
 	err = json.Unmarshal(body, &user)
 	if err != nil {
-		return User{}, fmt.Errorf("can't parse body as JSON: %w", err)
+		return projectApiClient.User{}, fmt.Errorf("can't parse body as JSON: %w", err)
 	}
 	return user, err
 }
-func (m *DataBaseAdapter) GetRezultDocumentation() ([]Document, error) {
+
+// GetRezultDocumentation метод получающий от API все документы и привязанные к нему Модули и Ошибки
+func (m *DataBaseAdapter) GetRezultDocumentation() ([]projectApiClient.Document, error) {
 	URLGET := UrlMain + "full"
 	req, err := http.NewRequest("GET", URLGET, nil)
 	if err != nil {
 		fmt.Println("Проблема с адресом", err)
-		return []Document{}, err
+		return []projectApiClient.Document{}, err
 	}
 	res, err := m.HTTPClient.Do(req)
 	if err != nil {
 		fmt.Println("проблема подключения к клиенту", err)
-		return []Document{}, err
+		return []projectApiClient.Document{}, err
 
 	}
 	defer res.Body.Close()
@@ -198,17 +201,53 @@ func (m *DataBaseAdapter) GetRezultDocumentation() ([]Document, error) {
 	body, err := ioutil.ReadAll(res.Body) // response body is []byte
 	if err != nil {
 		fmt.Println("Ошибка перевода ответа в строку", err)
-		return []Document{}, err
+		return []projectApiClient.Document{}, err
 
 	}
 	fmt.Println(string(body))
-	p := []Document{}
+	p := []projectApiClient.Document{}
 	fmt.Println("Печать из функции", string(body))
 	err = json.Unmarshal(body, &p)
 	if err != nil {
 		fmt.Println("Can not unmarshal JSON", err)
-		return []Document{}, err
+		return []projectApiClient.Document{}, err
 	}
-	fmt.Println("Структура", p)
+
 	return p, nil
+}
+
+// GetDirectoriesSlice метод модели получающий от API слайс директорий
+func (m *DataBaseAdapter) GetDirectories() ([]projectApiClient.Directory, error) {
+
+	URLGET := UrlMain + "directories"
+	fmt.Println("URLGET", URLGET)
+	req, err := http.NewRequest("GET", URLGET, nil)
+	if err != nil {
+		fmt.Println("Проблема с адресом", err)
+		return nil, err
+	}
+	res, err := m.HTTPClient.Do(req)
+	if err != nil {
+		fmt.Println("проблема подключения к клиенту", err)
+		return nil, err
+
+	}
+	defer res.Body.Close()
+	if 200 != res.StatusCode {
+		return nil, fmt.Errorf("%s", res.Body)
+	}
+	body, err := ioutil.ReadAll(res.Body) // response body is []byte
+	if err != nil {
+		fmt.Println("Ошибка перевода ответа в строку", err)
+		return nil, err
+
+	}
+	fmt.Println(string(body))
+	directories := []projectApiClient.Directory{}
+	err = json.Unmarshal(body, &directories)
+	if err != nil {
+		fmt.Println("Can not unmarshal JSON", err)
+		return []projectApiClient.Directory{}, err
+	}
+	return directories, nil
 }

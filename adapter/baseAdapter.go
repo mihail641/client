@@ -1,12 +1,15 @@
 package adapter
 
-import "fmt"
+import (
+	"example.com/projectApiClient"
+	"fmt"
+)
 
 type BaseAdapter struct {
 }
 
 // Min метод вычисление минимального id
-func (m *BaseAdapter) Min(p []User) int {
+func (m *BaseAdapter) Min(p []projectApiClient.User) int {
 	var k []int
 
 	for _, rec := range p {
@@ -22,7 +25,7 @@ func (m *BaseAdapter) Min(p []User) int {
 }
 
 // Max метод адаптера по определению  максимального значения id
-func (m *BaseAdapter) Max(p []User) int {
+func (m *BaseAdapter) Max(p []projectApiClient.User) int {
 	var k []int
 	for _, rec := range p {
 		k = append(k, rec.ID)

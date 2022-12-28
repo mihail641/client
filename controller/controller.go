@@ -24,7 +24,7 @@ func NewController(AdapterType adapterType.AdapterType) *Controller {
 // HandleHttp метод контроллера для запуска алгоритма модели, и возврата в роутер данных в формате xml
 func (m *Controller) HandleHttp(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("Сервер запустился")
-	
+
 	//ClientAlgorithmTake метод модели
 	var t, err = m.model.ClientAlgorithmTake()
 	if err != nil {
@@ -33,12 +33,11 @@ func (m *Controller) HandleHttp(res http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(res, m, err)
 		return
 	}
-	fmt.Println("Срез структуры перед XML", t)
 	//	установливаем заголовок «Content-Type: application/xml», т.к. потому что мы отправляем данные XML с запросом через роутер
 	res.Header().Set("Content-Type", "application/xml")
 	if err != nil {
 		res.Header().Set("Content-Type", "text/html")
-		
+
 	}
 	//кодирование в xml результата выполнения метода и передача в пакет main
 	xml.NewEncoder(res).Encode(&t)
