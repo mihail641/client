@@ -104,6 +104,7 @@ func (d *Model) GetRezultDocumentation() ([]projectApiClient.Document, error) {
 
 // GetDirectoriesSlice  метод модели получающий слайс Директорий из адаптера и отправляющий его в контроллер
 func (d *Model) GetDirectories() ([]projectApiClient.Directory, error) {
+	fmt.Println("Вошла в модель")
 	directories, err := d.adapter.GetDirectories()
 	if err != nil {
 		m := "Ошибка выполнеия 1 функции получения информации о всех пользователях"

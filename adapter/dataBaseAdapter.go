@@ -17,6 +17,8 @@ import (
 )
 
 //постоянные URL
+//const UrlMain = "http://127.0.0.1:4000/"
+
 var UrlMain = config.Get().Url_add
 
 // User структура
@@ -40,6 +42,8 @@ func (m *DataBaseAdapter) Close() {
 
 // MakeRequestGet метод получения всех значений БД
 func (m *DataBaseAdapter) MakeRequestGet() ([]projectApiClient.User, error) {
+	UrlMain = config.Get().Url_add
+	fmt.Println("", UrlMain)
 	URLGET := UrlMain + "users"
 	req, err := http.NewRequest("GET", URLGET, nil)
 	if err != nil {
@@ -77,7 +81,7 @@ func (m *DataBaseAdapter) MakeRequestGet() ([]projectApiClient.User, error) {
 
 // MakeRequestCreate метод адаптера создания нового значения
 func (m *DataBaseAdapter) MakeRequestCreate(user projectApiClient.User) (projectApiClient.User, error) {
-	URL := UrlMain + "user"
+	URL := config.Get().Url_add + "user"
 	userBytes, err := json.Marshal(user)
 	if err != nil {
 		fmt.Println(err)
@@ -110,7 +114,7 @@ func (m *DataBaseAdapter) MakeRequestCreate(user projectApiClient.User) (project
 
 // MakeRequestDelete метод адаптера удаление значений по максимальному id
 func (m *DataBaseAdapter) MakeRequestDelete(IdMax int) (projectApiClient.User, error) {
-	URL := UrlMain + "user"
+	URL := config.Get().Url_add + "user"
 	id := strconv.Itoa(IdMax)
 	fmt.Println("Максимально id", id)
 	id = url.PathEscape(id)
@@ -144,7 +148,7 @@ func (m *DataBaseAdapter) MakeRequestDelete(IdMax int) (projectApiClient.User, e
 
 // MakeRequestUpdate метод адаптера изменения значений БД по минимальному id
 func (m *DataBaseAdapter) MakeRequestUpdate(user projectApiClient.User) (projectApiClient.User, error) {
-	URL := UrlMain + "user"
+	URL := config.Get().Url_add + "user"
 
 	userBytes, err := json.Marshal(user)
 	if err != nil {
@@ -182,7 +186,7 @@ func (m *DataBaseAdapter) MakeRequestUpdate(user projectApiClient.User) (project
 
 // GetRezultDocumentation метод получающий от API все документы и привязанные к нему Модули и Ошибки
 func (m *DataBaseAdapter) GetRezultDocumentation() ([]projectApiClient.Document, error) {
-	URLGET := UrlMain + "full"
+	URLGET := config.Get().Url_add + "full"
 	req, err := http.NewRequest("GET", URLGET, nil)
 	if err != nil {
 		fmt.Println("Проблема с адресом", err)
@@ -219,7 +223,7 @@ func (m *DataBaseAdapter) GetRezultDocumentation() ([]projectApiClient.Document,
 // GetDirectoriesSlice метод модели получающий от API слайс директорий
 func (m *DataBaseAdapter) GetDirectories() ([]projectApiClient.Directory, error) {
 
-	URLGET := UrlMain + "directories"
+	URLGET := config.Get().Url_add + "directories"
 	fmt.Println("URLGET", URLGET)
 	req, err := http.NewRequest("GET", URLGET, nil)
 	if err != nil {

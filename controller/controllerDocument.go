@@ -291,6 +291,14 @@ func (d *DocumentController) GetDirectoriesTable(res http.ResponseWriter, req *h
 		fmt.Fprintf(res, m, err)
 		return
 	}
+	tableAll := getTableResult(directories)
+
+	html := []byte(tableAll)
+	//отправка в браузер
+	res.Write(html)
+}
+
+func getTableResult(directories []projectApiClient.Directory) string {
 
 	tableHead := `<html lang="ru">
 	<table border="1" width="600">
@@ -306,7 +314,7 @@ func (d *DocumentController) GetDirectoriesTable(res http.ResponseWriter, req *h
 		level := 0
 		getSliceColoms(directories[key].Directories, level, &sliceColom)
 	}
-	fmt.Println("sliceColom*", sliceColom)
+
 	// вычисление максимального номера столбца
 	var colomsNum int
 	sumMax := (sliceColom)[0]
@@ -315,7 +323,6 @@ func (d *DocumentController) GetDirectoriesTable(res http.ResponseWriter, req *h
 		if value > sumMax {
 			sumMax = value
 		}
-		fmt.Println("sumMax", sumMax)
 		colomsNum = colomsNum + sumMax
 	}
 	//отправка номера максимального столбца в функцию по построению заголовка таблицы
@@ -358,9 +365,7 @@ func (d *DocumentController) GetDirectoriesTable(res http.ResponseWriter, req *h
 		`</tbody>
 </table>
 </html>`
-	html := []byte(tableAll)
-	//отправка в браузер
-	res.Write(html)
+	return tableAll
 }
 
 //функция, которая рисует строки
@@ -427,7 +432,6 @@ func getSliceColoms(directories []projectApiClient.Directory, level int, sliceCo
 
 		getSliceColoms(directories[key].Directories, level, sliceColomn)
 	}
-	fmt.Println("level", level)
 
 }
 
