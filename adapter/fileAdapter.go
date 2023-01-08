@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"bufio"
+	"example.com/projectApiClient"
 	"fmt"
 	"log"
 	"os"
@@ -40,7 +41,7 @@ func (f *FileAdapter) Close() {
 }
 
 // MakeRequestGet метод получения всех значений из файла
-func (f *FileAdapter) MakeRequestGet() ([]User, error) {
+func (f *FileAdapter) MakeRequestGet() ([]projectApiClient.User, error) {
 	//формируется слайс из строк файла, каждая строка записывается как отдельный элемент
 	slice := make([]string, 0)
 	for {
@@ -60,7 +61,7 @@ func (f *FileAdapter) MakeRequestGet() ([]User, error) {
 		}
 		slice = append(slice, str)
 	}
-	k := []User{}
+	k := []projectApiClient.User{}
 	//создание слайса из слов
 	word := make([]string, 0)
 	for i := 1; i < len(slice); i++ {
@@ -71,7 +72,7 @@ func (f *FileAdapter) MakeRequestGet() ([]User, error) {
 		if err != nil {
 			m := "Ошибка перевода из string в int: %s"
 			fmt.Println(m, err)
-			return []User{}, err
+			return []projectApiClient.User{}, err
 		}
 		fmt.Println(m)
 		p := word[1]
@@ -81,25 +82,25 @@ func (f *FileAdapter) MakeRequestGet() ([]User, error) {
 		if err != nil {
 			m := "Ошибка перевода из string в int: %s"
 			fmt.Println(m, err)
-			return []User{}, err
+			return []projectApiClient.User{}, err
 		}
 		fmt.Println(z)
 		//присваивание в структуру User значений из слайса
-		k = append(k, User{m, p, z})
+		k = append(k, projectApiClient.User{m, p, z})
 	}
 	return k, nil
 
 }
 
 // MakeRequestCreate метод адаптера создания нового значения в файл
-func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
+func (f *FileAdapter) MakeRequestCreate(user projectApiClient.User) (projectApiClient.User, error) {
 	//формируется слайс из 1 строки файла,
 	slice := make([]string, 0)
 	//считывает первую строку из файла
 	str, err := f.reader.ReadString('\n')
 	if err != nil {
 		fmt.Println("Строка не читается", err)
-		return User{}, err
+		return projectApiClient.User{}, err
 	}
 	//TrimRight возвращает срез 1-ой строки str убирая перенос строки.
 	str = strings.TrimRight(str, "\n")
@@ -107,7 +108,7 @@ func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
 	slice = append(slice, str)
 	fmt.Println(slice)
 
-	k := []User{}
+	k := []projectApiClient.User{}
 	//создание слайса из слов 1 строки
 	for i := 0; i < 1; i++ {
 		word := strings.Split(slice[i], " ")
@@ -116,11 +117,11 @@ func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
 		if err != nil {
 			m := "Ошибка перевода из string в int: %s"
 			fmt.Println(m, err)
-			return User{}, err
+			return projectApiClient.User{}, err
 		}
 		fmt.Println(m)
 		//присваивание структуре User id, получившегося при чтении файла, а так же значений Name, Sale из Модели
-		k = append(k, User{m, user.Name, user.Sale})
+		k = append(k, projectApiClient.User{m, user.Name, user.Sale})
 		//перевод Id, Sale из int в string, добавление переноса строки и табуляции между словами
 		values := []string{}
 		values = append(values, strconv.Itoa(m))
@@ -143,11 +144,11 @@ func (f *FileAdapter) MakeRequestCreate(user User) (User, error) {
 		}
 
 	}
-	return User{}, err
+	return projectApiClient.User{}, err
 }
 
 // MakeRequestDelete метод адаптера удаление значений по максимальному id
-func (f *FileAdapter) MakeRequestDelete(IdMax int) (User, error) {
+func (f *FileAdapter) MakeRequestDelete(IdMax int) (projectApiClient.User, error) {
 	//формируется слайс из строк файла, каждая строка записывается как отдельный элемент
 	slice := make([]string, 0)
 	for {
@@ -179,11 +180,11 @@ func (f *FileAdapter) MakeRequestDelete(IdMax int) (User, error) {
 		log.Fatal(err)
 	}
 
-	return User{}, err
+	return projectApiClient.User{}, err
 }
 
 // MakeRequestUpdate метод адаптера изменения значений БД по минимальному id
-func (f *FileAdapter) MakeRequestUpdate(user User) (User, error) {
+func (f *FileAdapter) MakeRequestUpdate(user projectApiClient.User) (projectApiClient.User, error) {
 	//формируется слайс из 1 строки файла,
 	slice := make([]string, 0)
 	//создается строка из данных структуры User переданной из модели, разделяется табуляцией и
@@ -220,8 +221,11 @@ func (f *FileAdapter) MakeRequestUpdate(user User) (User, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return User{}, err
+	return projectApiClient.User{}, err
 }
-func (f *FileAdapter) GetRezultDocumentation() ([]Document, error) {
+func (f *FileAdapter) GetRezultDocumentation() ([]projectApiClient.Document, error) {
+	return nil, nil
+}
+func (f *FileAdapter) GetDirectories() ([]projectApiClient.Directory, error) {
 	return nil, nil
 }

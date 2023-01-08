@@ -9,12 +9,19 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
-	var c config.Config
-	c = config.Get()
+
+	err := config.Init()
+	if err != nil {
+		fmt.Println("Ошибка в файле my.ini, неправильно задан адрес или флаг", err)
+		os.Exit(1)
+	}
+	c := config.Get()
 	flagComand := c.ConcreteAdapterType
+	fmt.Println("Флаг команды", flagComand)
 	//получение и считывание значения флага, возможные значения флага берутся из adapterType
 	var concreteAdapterType string
 	flag.StringVar(&concreteAdapterType, "concreteAdapterType", string(flagComand), "")
@@ -22,6 +29,7 @@ func main() {
 	var p adapterType.AdapterType
 	//присваивание считанного значения флага структуре adapterType
 	p = adapterType.AdapterType(concreteAdapterType)
+	fmt.Println("какой адаптер тайп", concreteAdapterType)
 	//adType:=make([]string,0)
 	//adType=append(adType, adapter.FileAdapterType)
 	//adType=append(adType,adapter.DataBaseAdapterType)
@@ -92,5 +100,5 @@ func main() {
 	log.Fatal(
 		http.ListenAndServe(":5000", router),
 	)
-	
+
 }
